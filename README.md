@@ -3,7 +3,7 @@ Made by david-0609, for the FSFE YH4F Coding Competition 2021
 
 ## Dependencies
 - Python 3.7
-- Tensorflow, OpenCV, mediapipe
+- Tensorflow, OpenCV, mediapipe (see requirements.txt)
 
 
 ## Generalised Approach
