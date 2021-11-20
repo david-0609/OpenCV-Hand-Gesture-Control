@@ -17,28 +17,49 @@ class HandDetector():
     
     def fdHands(self, frame, draw = True):
 
-        results = self.hands.process(frame)
+        self.results = self.hands.process(frame)
         
-        if results.multi_hand_landmarks:
-            for handLms in results.multi_hand_landmarks:
+        if self.results.multi_hand_landmarks:
+            for handLms in self.results.multi_hand_landmarks:
                 if draw:
                     self.mpDraw.draw_landmarks(frame, handLms, self.mpHands.HAND_CONNECTIONS)
                 else:
                     print("Not drawing")
                     
         return frame
+    
+    def fdPositions(self, frame):
+        landmarks_list = []
+        if self.results.multi_hand_landmarks:
+            hand = self.results.multi_hand_landmarks[0]
+            for id, lm in enumerate(hand.landmark):
+                h, w, _= frame.shape
+                cx, cy = int(lm.x * w), int(lm.y * h)
+                landmarks_list.append([id, cx, cy])
+                        
+        return landmarks_list
 
+    
 def main():
     capture = cv2.VideoCapture(0)
     detector = HandDetector()
-    
     prevTime = 0
     currTime = 0
     
+    def findLandmark(lmList, lmID):
+        return lmList[lmID]
+            
+            
     while True:
-        isTrue, frame = capture.read()
+        _, frame = capture.read()
         frame = cv2.flip(frame, 1)
         frame = detector.fdHands(frame)
+        
+        lmList = detector.fdPositions(frame)
+        try:
+            print(findLandmark(lmList, 8))
+        except IndexError:
+            print("Not Found")
         
         currTime = time.time()
         fps = 1 / (currTime-prevTime)
