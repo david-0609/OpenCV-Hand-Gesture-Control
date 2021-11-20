@@ -46,8 +46,11 @@ def main():
     prevTime = 0
     currTime = 0
     
-    def findLandmark(lmList, lmID):
-        return lmList[lmID]
+    def findLandmark(lmList, lmIDs: list) -> list:
+        lmIDlist = []
+        for id in lmIDs:
+            lmIDlist.append(lmList[id])
+        return lmIDlist
             
             
     while True:
@@ -57,7 +60,7 @@ def main():
         
         lmList = detector.fdPositions(frame)
         try:
-            print(findLandmark(lmList, 8))
+            print(findLandmark(lmList, [4, 8, 12, 16, 20]))
         except IndexError:
             print("Not Found")
         
