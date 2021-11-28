@@ -1,6 +1,7 @@
 import cv2
 import mediapipe as mp
 import time
+from collections import namedtuple
 
 class HandDetector():
     
@@ -39,7 +40,39 @@ class HandDetector():
                         
         return landmarks_list
 
+class DetectFinger:
     
+    def __init__(self, finger_ids, landmarkList) -> None:
+        self.finger_ids == finger_ids
+        self.landmarkList = landmarkList
+    
+    def finger_up(finger_ids, landmarkList) -> bool:
+        Point = namedtuple("Point", ["x", "y"])
+        ptList = []
+        
+        for coord in landmarkList:
+            del coord[0]
+            coord_x = coord[0]
+            coord_y = coord[1]
+            pt = Point(coord_x, coord_y)
+            ptList.append(pt)
+        previous_y = None
+        
+        times_run = 0
+        result_list = []
+        for point in ptList:
+            curr_y = point[1]
+            if times_run == 0:
+                previous_y = curr_y
+                times_run += 1
+            elif times_run > 0 and curr_y != previous_y and previous_y < curr_y:
+                print("true")
+                result_list.append(True)
+                times_run +=1
+        
+        if all(x == True for x in result_list):
+            return True
+        
 def main():
     capture = cv2.VideoCapture(0)
     detector = HandDetector()
