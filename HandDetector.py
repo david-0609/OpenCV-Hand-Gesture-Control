@@ -47,10 +47,17 @@ class DetectFinger:
         self.landmarkList = landmarkList
     
     def finger_up(finger_ids, landmarkList) -> bool:
+        
         Point = namedtuple("Point", ["x", "y"])
         ptList = []
+        cleanLMlist = []
         
         for coord in landmarkList:
+            for id in finger_ids:
+                if id == coord[0]:
+                    cleanLMlist.append(coord)
+        
+        for coord in cleanLMlist:
             del coord[0]
             coord_x = coord[0]
             coord_y = coord[1]
