@@ -10,6 +10,10 @@ Made by david-0609, for the FSFE YH4F Coding Competition 2021
 	python main.py
 
 ## Generalised Approach
-### ~~ 1. The model will draw a covex hull around the hand after separating the hand from the background, using the convex hull, find fingertips and track for gestures ~~
+### 1. The model will draw a covex hull around the hand after separating the hand from the background, using the convex hull, find fingertips and track for gestures
 ### 2. Use preexisting mediapipe model to track hand (more feasible) and use in GUI/TUI application.
 Algorithm to use: https://google.github.io/mediapipe/solutions/hands.html
+
+The mediapipe module will grab the coordinates of the points on the hand, and these points will be used to determine if a finger is being held up or not. Motion tracking will be done with numpy and matplotlib by logging the coordinate changes of the fingertips inside a detection window that is triggered by counting the number of fingers up.
+
+
