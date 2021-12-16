@@ -15,5 +15,5 @@ Made by david-0609, for the FSFE YH4F Coding Competition 2021
 Algorithm to use: https://google.github.io/mediapipe/solutions/hands.html
 
 The mediapipe module will grab the coordinates of the points on the hand, and these points will be used to determine if a finger is being held up or not. Motion tracking will be done with numpy and matplotlib by logging the coordinate changes of the fingertips inside a detection window that is triggered by counting the number of fingers up.
-
+OOP will be used for extensiblity and ease of access with a front end TUI/GUI application.  
 
