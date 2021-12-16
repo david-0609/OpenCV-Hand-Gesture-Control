@@ -40,15 +40,17 @@ class HandDetector():
                         
         return landmarks_list
 
-class DetectFinger:
+class Finger():
     
-    def __init__(self, finger_ids, landmarkList) -> None:
-        self.finger_ids == finger_ids
-        self.landmarkList = landmarkList
-    
-    def finger_up(finger_ids, landmarkList) -> bool:
+    def __init__(self, ids, isUp) -> None:
+        self.ids = lambda ids : ids.sort()
+        self.isUp = isUp
+        self.tip = self.ids[0]
+
+    def finger_up(ids, landmarkList):
         
         Point = namedtuple("Point", ["x", "y"])
+        finger_ids = ids.sort()
         ptList = []
         cleanLMlist = []
         
@@ -79,6 +81,8 @@ class DetectFinger:
         
         if all(x == True for x in result_list):
             return True
+        else: 
+            return False
         
 def main():
     capture = cv2.VideoCapture(0)
