@@ -1,7 +1,7 @@
 import cv2
 import mediapipe as mp
 import time
-from collections import namedtuple
+from itertools import groupby
 
 '''
 TODO
@@ -9,6 +9,8 @@ TODO
 - Make the is_up function functional
 - Initialise Fingers from a config file
 '''
+logging_list = []
+
 class HandDetector():
     
     def __init__(self, mode = False, max_hands = 2):
@@ -45,67 +47,62 @@ class HandDetector():
                 landmarks_list.append([id, cx, cy])
                         
         return landmarks_list
+    
+def all_equal(iterable):
+    g = groupby(iterable)
+    return next(g, True) and not next(g, False)
+
+
+def select_coords(ids):
+    cleaned_list = []
+    orig_list = logging_list[-1]
+    for coord in orig_list:
+        for id in ids:
+            if coord[0] == id:
+                cleaned_list.append(coord)
+                
+    return cleaned_list
 
 class Finger():
     
     def __init__(self, ids: list) -> None:
         self.ids = ids
+    
+    @property
+    def is_up(self):
+        ylist = []
+        cleaned_list = []
+        
+        cleaned_list = select_coords(self.ids)
+        cleaned_list.sort(key = lambda x:x[0])
+        print(cleaned_list)
+        
+        # If the finger is up, the y should be in a ascending order, which is sorted
+        for pt in cleaned_list:
+            ylist.append(pt[2])
+            
+        print(ylist)
 
-    def is_up(self, lmList):
-        
-        global lmIDlist
-        
-        Point = namedtuple("Point", ["x", "y"])
-        finger_ids = self.ids
-        finger_ids = finger_ids.sort()
-        ptList = []
-        cleanLMlist = []
-        result_list = []
-        
-        cleanLMlist = findLandmark(lmList, self.ids)
-        
-        for coord in cleanLMlist:
-            del coord[0]
-            coord_x = coord[0]
-            coord_y = coord[1]
-            pt = Point(coord_x, coord_y)
-            ptList.append(pt)
-        previous_y = None
-        
-        
-        for i in range(len(ptList)):
-            first_coord = ptList[i] 
-            second_coord = ptList[i+1]
-            # y of First Coord should be smaller than the second
-            try:
-                if first_coord.y < second_coord.y:
-                    result_list.append(True)
-                else:
-                    result_list.append(False)
-            except IndexError:
-                break
-        
-        if all(result_list):
-            return True
-        else:
+        flag = 0
+        if (all(ylist[i] <= ylist[i + 1] for i in range(len(ylist)-1))):
+            flag = 1
+            
+        if flag == 1:
             return False
+        else:
+            return True
 
-# Creates empty list for coordinates
-lmIDlist = []
-lmList = []
-def findLandmark(lmList, lmIDs: list) -> list:
-    try:
-        for id in lmIDs:
-            lmIDlist.append(lmList[id])
-    except IndexError:
-        print("Not found")
-    return lmIDlist
-
+Thumb = Finger([1,2,3,4])
 IndexFinger = Finger([5,6,7,8])
+MiddleFinger = Finger([9,10,11,12])
+RingFinger = Finger([13,14,15,16])
+LittleFinger = Finger([17,18,19,20])
+
 
 def main():
-    global lmIDlist
     global lmList
+    global logging_list
+        
     capture = cv2.VideoCapture(0)
     detector = HandDetector()
     prevTime = 0
@@ -118,11 +115,9 @@ def main():
         frame = detector.fdHands(frame)
         
         lmList = detector.fdPositions(frame)
-        try:
-            print(findLandmark(lmList, [5,6,7,8]), "\n")
-            print(IndexFinger.is_up(lmList), "Index Finger")
-        except IndexError:
-            print("Not Found")
+        logging_list.append(lmList)
+        #print(lmList)
+        print(IndexFinger.is_up)
                 
         currTime = time.time()
         fps = 1 / (currTime-prevTime)
@@ -131,5 +126,6 @@ def main():
         cv2.putText(frame, str(int(fps)), (10, 70), cv2.FONT_HERSHEY_PLAIN, 3, (0,0,255), thickness=3)
         cv2.imshow("Video", frame)
         cv2.waitKey(1)
-        
-main()
+
+if __name__ == "__main__":
+    main()
