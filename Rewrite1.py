@@ -1,3 +1,4 @@
+from HandDetector import IndexFinger
 import cv2
 import mediapipe as mp
 import time
@@ -70,28 +71,44 @@ class Finger():
     def __init__(self, ids: list) -> None:
         self.ids = ids.sort()
     
+    @property
     def is_up(self):
         ptlist = []
         ylist = []
         result_list = []
         
-        cleaned_list = select_coords(self.ids)
-        for coord in cleaned_list:
-            pt = Point(coord[0],coord[1],coord[2])
-            ptlist.append(pt)
-        
-        
-        # If the finger is up, the y should be in a ascending order, which is sorted
-        for pt in ptlist:
-            ylist.append(pt.y)
-        if ylist == ylist.sort():
-            return True
-        else:
-            return False
-        
+        try:
+            cleaned_list = select_coords(self.ids)
+            for coord in cleaned_list:
+                pt = Point(coord[0],coord[1],coord[2])
+                ptlist.append(pt)
+            
+            
+            # If the finger is up, the y should be in a ascending order, which is sorted
+            for pt in ptlist:
+                ylist.append(pt.y)
+            if ylist == ylist.sort():
+                return True
+            else:
+                return False
+        except BaseException as e:
+            print(e)
+            
+
+def init_fingers():
+    
+    Thumb = Finger([1,2,3,4])
+    IndexFinger = Finger([5,6,7,8])
+    MiddleFinger = Finger([9,10,11,12])
+    RingFinger = Finger([13,14,15,16])
+    LittleFinger = Finger([17,18,19,20])
+    
 def main():
     global lmList
     global logging_list
+    
+    init_fingers()
+    
     capture = cv2.VideoCapture(0)
     detector = HandDetector()
     prevTime = 0
@@ -105,7 +122,8 @@ def main():
         
         lmList = detector.fdPositions(frame)
         logging_list.append(lmList)
-        print(lmList)
+        #print(lmList)
+        print(IndexFinger.is_up)
                 
         currTime = time.time()
         fps = 1 / (currTime-prevTime)
@@ -114,5 +132,6 @@ def main():
         cv2.putText(frame, str(int(fps)), (10, 70), cv2.FONT_HERSHEY_PLAIN, 3, (0,0,255), thickness=3)
         cv2.imshow("Video", frame)
         cv2.waitKey(1)
-        
-main()
+
+if __name__ == "__main__":
+    main()
