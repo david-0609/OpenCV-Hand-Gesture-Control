@@ -1,8 +1,6 @@
-from HandDetector import IndexFinger
 import cv2
 import mediapipe as mp
 import time
-from collections import namedtuple
 from itertools import groupby
 
 '''
@@ -54,7 +52,6 @@ def all_equal(iterable):
     g = groupby(iterable)
     return next(g, True) and not next(g, False)
 
-Point = namedtuple("Point", ["id", "x", "y"])
 
 def select_coords(ids):
     cleaned_list = []
@@ -65,50 +62,47 @@ def select_coords(ids):
                 cleaned_list.append(coord)
                 
     return cleaned_list
-                
+
 class Finger():
     
     def __init__(self, ids: list) -> None:
-        self.ids = ids.sort()
+        self.ids = ids
     
     @property
     def is_up(self):
-        ptlist = []
         ylist = []
-        result_list = []
+        cleaned_list = []
         
-        try:
-            cleaned_list = select_coords(self.ids)
-            for coord in cleaned_list:
-                pt = Point(coord[0],coord[1],coord[2])
-                ptlist.append(pt)
+        cleaned_list = select_coords(self.ids)
+        cleaned_list.sort(key = lambda x:x[0])
+        print(cleaned_list)
+        
+        # If the finger is up, the y should be in a ascending order, which is sorted
+        for pt in cleaned_list:
+            ylist.append(pt[2])
             
-            
-            # If the finger is up, the y should be in a ascending order, which is sorted
-            for pt in ptlist:
-                ylist.append(pt.y)
-            if ylist == ylist.sort():
-                return True
-            else:
-                return False
-        except BaseException as e:
-            print(e)
-            
+        print(ylist)
 
-def init_fingers():
-    
-    Thumb = Finger([1,2,3,4])
-    IndexFinger = Finger([5,6,7,8])
-    MiddleFinger = Finger([9,10,11,12])
-    RingFinger = Finger([13,14,15,16])
-    LittleFinger = Finger([17,18,19,20])
-    
+        flag = 0
+        if (all(ylist[i] <= ylist[i + 1] for i in range(len(ylist)-1))):
+            flag = 1
+            
+        if flag == 1:
+            return False
+        else:
+            return True
+
+Thumb = Finger([1,2,3,4])
+IndexFinger = Finger([5,6,7,8])
+MiddleFinger = Finger([9,10,11,12])
+RingFinger = Finger([13,14,15,16])
+LittleFinger = Finger([17,18,19,20])
+
+
 def main():
     global lmList
     global logging_list
-    
-    init_fingers()
-    
+        
     capture = cv2.VideoCapture(0)
     detector = HandDetector()
     prevTime = 0
