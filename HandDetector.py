@@ -67,6 +67,7 @@ class Finger():
     
     def __init__(self, ids: list) -> None:
         self.ids = ids
+        self.tip = ids[0]
     
     @property
     def is_up(self):
@@ -91,6 +92,11 @@ class Finger():
             return False
         else:
             return True
+        
+    @property
+    def tip_coord(self):
+        tip_coord = select_coords(self.tip)
+        return tip_coord
 
 Thumb = Finger([1,2,3,4])
 IndexFinger = Finger([5,6,7,8])
