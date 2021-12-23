@@ -72,30 +72,22 @@ class Finger():
     
     def is_up(self):
         ptlist = []
+        ylist = []
         result_list = []
+        
         cleaned_list = select_coords(self.ids)
         for coord in cleaned_list:
             pt = Point(coord[0],coord[1],coord[2])
             ptlist.append(pt)
         
-        for i in range(len(ptlist)):
-            pt1 = ptlist[i]
-            #Checks if at the end of the list
-            if i+1 <= len(ptlist):
-                pt2 = ptlist[i+1]
-            else:
-                break
-            
-            if pt2.y > pt1.y:
-                result_list.append(True)
-            else:
-                result_list.append(False)
-                
-            if all_equal(result_list):
-                return True
-            else:
-                return False
-            
+        
+        # If the finger is up, the y should be in a ascending order, which is sorted
+        for pt in ptlist:
+            ylist.append(pt.y)
+        if ylist == ylist.sort():
+            return True
+        else:
+            return False
         
 def main():
     global lmList
