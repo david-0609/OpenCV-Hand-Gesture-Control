@@ -1,4 +1,5 @@
 import time
+import cv2
 from itertools import groupby
 import Finger, Gesture, HandDetector
 
