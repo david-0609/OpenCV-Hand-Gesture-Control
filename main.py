@@ -1,7 +1,8 @@
 import time
 import cv2
 from itertools import groupby
-import Finger, Gesture, HandDetector
+from modules.Finger import Finger
+from modules.HandDetector import HandDetector
 
 '''
 TODO
@@ -22,7 +23,10 @@ MiddleFinger = Finger([9,10,11,12])
 RingFinger = Finger([13,14,15,16])
 LittleFinger = Finger([17,18,19,20])
 FingerList = [Thumb,IndexFinger,MiddleFinger,RingFinger,LittleFinger]
-    
+
+# Gestures will be imported after FingerList is created
+from modules.Gesture import Gesture
+
 def all_equal(iterable):
     g = groupby(iterable)
     return next(g, True) and not next(g, False)

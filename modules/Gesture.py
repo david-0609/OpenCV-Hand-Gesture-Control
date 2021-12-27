@@ -1,5 +1,10 @@
-from main import FingerList
 from pyautogui import keyDown, press, keyUp
+import os, sys
+currentdir = os.path.dirname(os.path.realpath(__file__))
+parentdir = os.path.dirname(currentdir)
+sys.path.append(parentdir)
+
+from main import FingerList
 
 
 class Gesture():
