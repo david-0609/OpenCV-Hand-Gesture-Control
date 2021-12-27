@@ -5,9 +5,11 @@ import Finger, Gesture, HandDetector
 
 '''
 TODO
-- Have the Finger class functional
-- Make the is_up function functional
-- Initialise Fingers from a config file
+- Have the Finger class functional (Done)
+- Make the is_up function functional (Done)
+- Initialise Fingers from a config file (Not Needed)
+- Figure out a way to start the detection window and track frames
+- Init gesture actions from config file. 
 '''
 # This will contain all the coordinates from the frames
 logging_list = []
