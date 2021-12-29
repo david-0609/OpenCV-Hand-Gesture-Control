@@ -4,7 +4,7 @@ currentdir = os.path.dirname(os.path.realpath(__file__))
 parentdir = os.path.dirname(currentdir)
 sys.path.append(parentdir)
 
-from main import FingerList, logging_list
+from run import FingerList, logging_list
 
 error_log = []
 
