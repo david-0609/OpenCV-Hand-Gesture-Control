@@ -2,12 +2,11 @@
 Made by david-0609, for the FSFE YH4F Coding Competition 2021
 
 ## Dependencies
-- Python 3.7, other versions of Python may not have the libraries
-- Tensorflow, OpenCV, mediapipe (see requirements.txt)
+- Python 3.7, other versions of Python may not be compatible with the libraries
+- Numpy, OpenCV, mediapipe etc (see requirements.txt)
 
-## Installation and Running
+## Installation
 	pip install -r requirements.txt
-	python main.py
 
 ## Generalised Approach
 <s> 1. The model will draw a covex hull around the hand after separating the hand from the background, using the convex hull, find fingertips and track for gestures</s>
@@ -18,3 +17,10 @@ The mediapipe module will grab the coordinates of the points on the hand, and th
 OOP will be used for extensiblity and ease of access with a front end TUI/GUI application.  
 
 A detection window will be started as soon as all 5 fingers are found on screen, the default value is 5 seconds. Frames in the future 5 seconds will be monitored and after the finger is out of the camera or the window is over, an action will be performed through keyboard shortcut based on the results of monitoring. The x and y coordinates will be monitored and determined similiarly to the finger_up function.
+
+## Screenshots
+
+## Usage Examples
+
+### Acknowledgements
+
