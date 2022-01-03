@@ -1,0 +1,2 @@
+class GestureFactory:
+    pass

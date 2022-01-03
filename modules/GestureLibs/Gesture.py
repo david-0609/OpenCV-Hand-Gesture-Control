@@ -2,7 +2,8 @@ from pyautogui import keyDown, press, keyUp
 import os, sys, time
 currentdir = os.path.dirname(os.path.realpath(__file__))
 parentdir = os.path.dirname(currentdir)
-sys.path.append(parentdir)
+pparentdir = os.path.dirname(parentdir)
+sys.path.append(pparentdir)
 
 from run import FingerList, logging_list
 
