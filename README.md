@@ -24,3 +24,9 @@ A detection window will be started as soon as all 5 fingers are found on screen,
 
 ### Acknowledgements
 
+Many Thanks to:
+- My parents, who supported me throughout this project
+- brokenbyte, who gave me lots of tips on development (<https://gitlab.com/brokenbyte/https://gitlab.com/brokenbyte/>)
+- Tristan, who helped me develop my idea
+- My friends, who gave me ideas for extra features
+- Of course, there is always StackOverflow
