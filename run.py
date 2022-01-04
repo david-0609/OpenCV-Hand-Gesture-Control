@@ -1,8 +1,17 @@
-import time
 import cv2
+import sys, os, time
 from itertools import groupby
 from modules.Finger import Finger
 from modules.HandDetector import HandDetector
+
+# Adds the directory for the gesture libraries
+currentdir = os.path.dirname(os.path.realpath(__file__))
+GestureDir = currentdir+"/modules/GestureLibs"
+sys.path.insert(GestureDir)
+
+import Gesture
+import GestureFactory
+import GestureDetector
 
 '''
 TODO
