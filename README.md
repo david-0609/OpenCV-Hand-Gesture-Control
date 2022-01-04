@@ -22,6 +22,15 @@ A detection window will be started as soon as all 5 fingers are found on screen,
 
 ## Usage Examples
 
+#### With GUI
+	python run.py --gui
+
+#### Without GUI
+	python run.py
+
+#### Verbose mode
+	python run.py --verbose
+
 ### Acknowledgements
 
 Many Thanks to:
