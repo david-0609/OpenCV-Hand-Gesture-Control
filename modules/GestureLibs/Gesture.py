@@ -36,17 +36,19 @@ class Gesture():
         finally:
             return error_log
             
-    def __start_detection(self):
+    def start_detection(self):
         fingers_up = []
         detection_frames = []
         for finger in FingerList:
             if finger.is_up == True:
                 fingers_up.append(finger.is_up)
         if len(fingers_up) == 5:
+            time.sleep(0.5) #sleeps 0.6 seconds for the user to change to the actual gesture
             start = time.time()
-            while int(time.time())-start < 3:
-                detection_frames.append(logging_list[-1])
-                if len(fingers_up) == 0:
+            while int(time.time())-start < 3: # 2 second detection window
+                detection_frames.append(logging_list[-1]) 
+                if logging_list[-1] == False:
+                    print("No fingers found, exiting")
                     break
         return detection_frames
                 
