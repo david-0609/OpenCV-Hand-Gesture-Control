@@ -11,7 +11,10 @@ class Run:
         pass
     
     def stop(self):
-        pass
+        #kill(pid)
+
+    def status(self):
+        #return pid
     
     
         

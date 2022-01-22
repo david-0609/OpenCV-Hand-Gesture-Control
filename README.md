@@ -31,6 +31,9 @@ A detection window will be started as soon as all 5 fingers are found on screen,
 #### Verbose mode
 	python run.py --verbose
 
+#### Open Config
+	python run.py --check-config [file]
+
 ### Acknowledgements
 
 Many Thanks to:
