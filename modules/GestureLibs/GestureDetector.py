@@ -52,6 +52,13 @@ class GestureDetector:
                 else:
                     raise DirectionNotDetermined
                 
-            
+            if diff_y > diff_x:
+                #goes up/down      
+                if first_y < middle_y < final_y:
+                    fingertip.direction = "u"
+                elif first_y < middle_y < final_y:
+                    fingertip.direction = "d"
+        
+        return FingerTipList
                                     
     

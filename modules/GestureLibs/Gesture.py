@@ -15,7 +15,6 @@ class Gesture():
     def __init__(self, action: list, fingers_up: list, direction: str, detection_time = 3) -> None:
         self.action = action
         self.fingers_up = fingers_up
-        self.direction = direction
         self.detection_time = detection_time
     
     def exec_action(self):
