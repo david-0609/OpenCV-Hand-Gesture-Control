@@ -1,8 +1,16 @@
 import Gesture
 from dataclasses import dataclass
-
+import time
+import sys
 from modules.Finger import Finger
 from modules.Exceptions import DirectionNotDetermined
+
+currentdir = os.path.dirname(os.path.realpath(__file__))
+parentdir = os.path.dirname(currentdir)
+pparentdir = os.path.dirname(parentdir)
+sys.path.append(pparentdir)
+
+from run import FingerList, logging_list
 
 FINGERTIPS = [4,8,12,16,20]
 FingerTipList = []
@@ -18,6 +26,22 @@ class GestureDetector:
     def __init__(self, detection_frames: list, gestures) -> None:
         self.detection_frames = detection_frames
         self.gestures = gestures
+        
+    def start_detection(self):
+        fingers_up = []
+        detection_frames = []
+        for finger in FingerList:
+            if finger.is_up == True:
+                fingers_up.append(finger.is_up)
+        if len(fingers_up) == 5:
+            time.sleep(0.5) #sleeps 0.6 seconds for the user to change to the actual gesture
+            start = time.time()
+            while int(time.time())-start < 3: # 2 second detection window
+                detection_frames.append(logging_list[-1]) 
+                if logging_list[-1] == False:
+                    print("No fingers found, exiting")
+                    break
+        return detection_frames
         
     def parse_fingertips(self):
         global FingerTipList
