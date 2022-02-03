@@ -1,4 +1,6 @@
 import argparse
+import multiprocessing
+
 class Run:
     
     def __init__(self, gui: bool = True, debug: bool = False,  camera_dir = "/dev/video0"):
