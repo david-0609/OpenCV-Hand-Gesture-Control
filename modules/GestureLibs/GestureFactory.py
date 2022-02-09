@@ -7,8 +7,14 @@ class GestureFactory:
         self.config_file = config    
         
     def read_config(self):
-        parser.read(self.config_file)
-        for config in parser:
+        parser.read(str(self.config_file))
+        for config in parser.sections:
+            name = parser[config][name]
+            action = parser[config][action]
+            fingers_up = parser[config][fingers_up]
+            direction = parser[config][direction] 
+            
+        
             
     
     def write_config(self, name, fingers_up, direction, action):

@@ -10,7 +10,7 @@ class Gesture():
         self.name = name
         self.action = action
         self.fingers_up = fingers_up
-        self.detection_time = detection_time
+        self.direction = direction
     
     def exec_action(self):
         

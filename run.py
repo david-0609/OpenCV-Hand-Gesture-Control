@@ -1,17 +1,11 @@
 import cv2
 import sys, os, time
 from itertools import groupby
-from modules.Finger import Finger
 from modules.HandDetector import HandDetector
-
-# Adds the directory for the gesture libraries
-currentdir = os.path.dirname(os.path.realpath(__file__))
-GestureDir = currentdir+"/modules/GestureLibs"
-sys.path.insert(GestureDir)
-
-import Gesture
-import GestureFactory
-import GestureDetector
+from modules.GestureLibs import Gesture
+from modules.GestureLibs import GestureFactory
+from modules.GestureLibs import GestureDetector
+from modules.Finger import FingersFactory
 
 '''
 TODO
@@ -24,17 +18,7 @@ TODO
 # This will contain all the coordinates from the frames
 logging_list = []
 fps_list = []
-
-# Creates the fingers
-Thumb = Finger([1,2,3,4])
-IndexFinger = Finger([5,6,7,8])
-MiddleFinger = Finger([9,10,11,12])
-RingFinger = Finger([13,14,15,16])
-LittleFinger = Finger([17,18,19,20])
-FingerList = [Thumb,IndexFinger,MiddleFinger,RingFinger,LittleFinger]
-
-# Gestures will be imported after FingerList is created
-from modules.Gesture import Gesture
+FingerList = FingersFactory.create_fingers() 
 
 def all_equal(iterable):
     g = groupby(iterable)

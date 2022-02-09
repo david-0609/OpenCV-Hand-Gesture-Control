@@ -2,6 +2,7 @@ import Gesture
 from dataclasses import dataclass
 import time
 import sys
+import os
 from modules.Finger import Finger
 from modules.Exceptions import DirectionNotDetermined
 
@@ -21,6 +22,7 @@ class FingerTips:
     x_coord: list
     y_coord: list
     direction: str
+
 class GestureDetector:
     
     def __init__(self, detection_frames: list, gestures) -> None:
@@ -54,8 +56,13 @@ class GestureDetector:
                 if coord[0] == tip.id:
                     tip.x_coord.append(coord[1])
                     tip.y_coord.append(coord[2])
+        return FingerTipList
                     
     def identify_dir(self):
+        '''
+        This function identifies the direction of travel of the finger through using 3 points of the fingertip's travel
+        Should be mostly accurate
+        '''
         for fingertip in FingerTipList:
             first_x = fingertip.x_coord[0]
             middle_x = fingertip.x_coord[int(len(fingertip.x_coord)/2)]
