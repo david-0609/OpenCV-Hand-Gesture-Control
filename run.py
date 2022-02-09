@@ -1,11 +1,10 @@
 import cv2
 import sys, os, time
-from itertools import groupby
 from modules.HandDetector import HandDetector
 from modules.GestureLibs import Gesture
 from modules.GestureLibs import GestureFactory
 from modules.GestureLibs import GestureDetector
-from modules.Finger import FingersFactory
+from modules.Finger import FingersGenerator
 
 '''
 TODO
@@ -18,21 +17,7 @@ TODO
 # This will contain all the coordinates from the frames
 logging_list = []
 fps_list = []
-FingerList = FingersFactory.create_fingers() 
-
-def all_equal(iterable):
-    g = groupby(iterable)
-    return next(g, True) and not next(g, False)
-
-def select_coords(ids):
-    cleaned_list = []
-    orig_list = logging_list[-1]
-    for coord in orig_list:
-        for id in ids:
-            if coord[0] == id:
-                cleaned_list.append(coord)
-                
-    return cleaned_list
+FingerList = FingersGenerator.create_fingers() 
 
 def main():
     global logging_list

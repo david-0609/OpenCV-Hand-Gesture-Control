@@ -1,7 +1,7 @@
 import Tools
-
+from run import logging_list
 class Finger():
-    
+# Factory Design Pattern    
     def __init__(self, ids: list, finger_id=None) -> None:
         self.ids = ids
         self.tip = ids[0]
@@ -12,7 +12,7 @@ class Finger():
         ylist = []
         cleaned_list = []
         
-        cleaned_list = Tools.select_coords(self.ids)
+        cleaned_list = Tools.select_coords(self.ids, logging_list)
         cleaned_list.sort(key = lambda x:x[0])
         print(cleaned_list)
         
@@ -33,14 +33,13 @@ class Finger():
                 
     @property
     def tip_coord(self):
-        tip_coord = Tools.select_coords(self.tip)
+        tip_coord = Tools.select_coords(self.tip, logging_list)
         return tip_coord
 
-class FingersFactory:
+class FingersGenerator:
 
-    def __init__(self, finger_ids) -> None:
-        self,finger_ids = finger_ids
-        return finger_ids
+    def __init__(self) -> None:
+        pass
 
     def create_fingers(self):
         # Creates the fingers
