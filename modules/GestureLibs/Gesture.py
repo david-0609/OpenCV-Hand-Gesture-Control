@@ -6,7 +6,7 @@ error_log = []
 class Gesture():
 
     
-    def __init__(self, name: str, action: list, fingers_up: list, direction: str, detection_time = 3) -> None:
+    def __init__(self, name: str, action: list, fingers_up: list, direction: str) -> None:
         self.name = name
         self.action = action
         self.fingers_up = fingers_up
@@ -26,10 +26,10 @@ class Gesture():
         except BaseException as e:
             print("Error: ", e)
             error_log.append(e)
-        
-        else:
-            return True
-        
+    
+            if e == None:
+                return True
+    
         finally:
             return error_log
 

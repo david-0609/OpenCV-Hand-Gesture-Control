@@ -2,7 +2,7 @@ import cv2
 import sys, os, time
 from modules.HandDetector import HandDetector
 from modules.GestureLibs import Gesture
-from modules.GestureLibs import GestureFactory
+from modules.GestureLibs import GestureGenerator
 from modules.GestureLibs import GestureDetector
 from modules.Finger import FingersGenerator
 
@@ -17,7 +17,8 @@ TODO
 # This will contain all the coordinates from the frames
 logging_list = []
 fps_list = []
-FingerList = FingersGenerator.create_fingers() 
+FingersGenerator = FingersGenerator() 
+FingersGenerator.create_fingers()
 
 def main():
     global logging_list
