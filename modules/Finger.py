@@ -1,7 +1,11 @@
 import Tools
 from run import logging_list
+
+FingerTipList = []
+
 class Finger():
-# Factory Design Pattern    
+
+    # Factory Design Pattern    
     def __init__(self, ids: list, finger_id=None) -> None:
         self.ids = ids
         self.tip = ids[0]
@@ -20,7 +24,7 @@ class Finger():
         for pt in cleaned_list:
             ylist.append(pt[2])
             
-        print(ylist)
+        #print(ylist)
 
         flag = 0
         if (all(ylist[i] <= ylist[i + 1] for i in range(len(ylist)-1))):
@@ -51,3 +55,10 @@ class FingersGenerator:
         FingerList = [Thumb,IndexFinger,MiddleFinger,RingFinger,LittleFinger]
         
         return FingerList
+
+    def create_fingertip_list(self):
+        global FingerTipList 
+        for finger in FingerTipList:
+        
+            FingerTipList.append(finger.tip)
+

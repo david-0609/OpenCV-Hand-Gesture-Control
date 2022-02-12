@@ -29,14 +29,7 @@ class Gesture():
     
             if e == None:
                 return True
-    
-        finally:
-            return error_log
-
-                
-
-    
+            else:
+                return error_log
             
-            
-                
-        
+

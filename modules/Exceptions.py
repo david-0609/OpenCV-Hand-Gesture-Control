@@ -4,4 +4,8 @@ class DirectionNotDetermined(BaseException):
         self.message = message
         super().__init__(self.message)
 
+class ConfigError(BaseException):
 
+    def __init__(self, message="Possible error in syntax of config."):
+        self.message = message
+        super().__init__(self.message)

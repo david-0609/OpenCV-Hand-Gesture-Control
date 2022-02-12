@@ -3,7 +3,6 @@ from dataclasses import dataclass
 import time
 import sys
 import os
-from modules.Finger import Finger
 from modules.Exceptions import DirectionNotDetermined
 
 currentdir = os.path.dirname(os.path.realpath(__file__))
@@ -11,10 +10,11 @@ parentdir = os.path.dirname(currentdir)
 pparentdir = os.path.dirname(parentdir)
 sys.path.append(pparentdir)
 
+from Finger import FingerTipList
 from run import FingerList, logging_list
 
-FINGERTIPS = [4,8,12,16,20]
-FingerTipList = []
+FINGERTIPS = FingerTipList
+
 @dataclass
 class FingerTips:
     
@@ -91,5 +91,8 @@ class GestureDetector:
                     fingertip.direction = "d"
         
         return FingerTipList
-                                    
+    
+    def match_gesture(self):
+        # Match previous information to a gesture
+        pass
     

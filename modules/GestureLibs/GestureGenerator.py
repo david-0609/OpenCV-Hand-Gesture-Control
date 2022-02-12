@@ -9,15 +9,14 @@ class GestureGenerator:
     def read_config(self):
         GestureList = []
         config = ConfigParser
-        config.read(filenames=self.config_file)
+        config.read(filenames=str(self.config_file))
         for section in config.sections():
             # Validates if all information in config can be used, raise errors that can be handled in run
-            if type(parser[config][name]) != str:
-                raise BaseException("Use string only for name of gesture")
-            gesture_name = section[config][name]
-            gesture_action = section[config][action]
-            gesture_fingers_up = section[config][fingers_up]
-            gesture_direction = section[config][direction] 
+            
+            gesture_name = config[section][name]
+            gesture_action = config[section][action]
+            gesture_fingers_up = config[section][fingers_up]
+            gesture_direction = config[section][direction] 
             GestureList.append(Gesture(str(gesture_name), str(gesture_action), str(gesture_fingers_up), str(gesture_direction)))           
         return GestureList
 

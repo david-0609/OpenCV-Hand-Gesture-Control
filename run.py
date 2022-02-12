@@ -18,7 +18,8 @@ TODO
 logging_list = []
 fps_list = []
 FingersGenerator = FingersGenerator() 
-FingersGenerator.create_fingers()
+FingerList = FingersGenerator.create_fingers()
+# Other files will import this from run, not from FingersGenerator
 
 def main():
     global logging_list
