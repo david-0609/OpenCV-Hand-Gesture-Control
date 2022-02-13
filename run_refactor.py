@@ -1,7 +1,7 @@
 import argparse
 import multiprocessing
 import cv2
-import os, time
+import os, time, signal
 from modules.HandDetector import HandDetector
 from modules.GestureLibs.Gesture import Gesture
 from modules.GestureLibs.GestureGenerator import GestureGenerator
@@ -27,8 +27,8 @@ FingersList = []
 def on_run():
 
     ap = argparse.ArgumentParser()
-    ap.add_argument("-g", "--gui", type=str, required=False, help="Run with GUI")
-    ap.add_argument("-d", "--debug", type=str, required=False, help="Print out debug info in console")
+    ap.add_argument("-g", "--gui", type=bool, required=False, help="Run with GUI")
+    ap.add_argument("-d", "--debug", type=bool, required=False, help="Print out debug info in console")
     ap.add_argument("--camera-dir", type=str, required=True, help="Directory of webcam e.g. /dev/video0")
     ap.add_argument("--set_config_path", type=str, required=False, help="Set the path of the config file")
     args = vars(ap.parse_args())
@@ -40,6 +40,8 @@ def on_run():
 
     Runner = Run(gui, debug, camera_dir, config_path)
     Runner.run()
+        
+    return gui, debug, camera_dir, config_path
 
 class Run:
 
@@ -75,22 +77,33 @@ class Run:
             cv2.imshow("Video", frame)
             cv2.waitKey(1)
 
-    def get_info(self):
-        '''
-        Check if the pid above is running, using multiprocessing library
-        '''
-        print("Process ID:", os.getpid())
+class ProcessController:
 
-    def stop(self):
+    run_pid = int()
+
+    def __init__(self, run_proc):
+       self.run_proc = run_proc
+
+    def start_run(self):
+        global run_pid
+        run_args = on_run()
+        Runner = Run(gui=run_args[0], debug=run_args[1], camera_dir=run_args[2], config_path=run_args[3])
+        run_proc = multiprocessing.Process(target=Runner.run)
+        run_proc.start()
+        run_pid = os.getpid()
+
+    def kill_run(self):
         try:
-            run_proc.terminate()
+            os.kill(run_pid, signal.SIGTERM) 
         except BaseException as e:
-            print("Error terminating PID", e)
+            print(f"Terminating process with pid %s resulted in error %s" % (run_pid, e))
+
+    def get_run_info(self):
+        global run_pid
+
+        print(f"Process ID: %s \n" % run_pid)
+       
+
 
 if __name__ == "__main__":
-    Runner = Run(gui, debug, camera_dir, config_path)
-    run_proc = multiprocessing.Process(target=Run.run)
-    run_proc.start()
-    
-    #run_proc.join()
-
+    on_run()
