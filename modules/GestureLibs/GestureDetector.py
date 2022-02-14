@@ -11,7 +11,7 @@ pparentdir = os.path.dirname(parentdir)
 sys.path.append(pparentdir)
 
 from Finger import FingerTipList
-from run import FingerList, logging_list
+from run import FingersList, logging_list
 
 FINGERTIPS = FingerTipList
 

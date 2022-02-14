@@ -7,6 +7,7 @@ from modules.GestureLibs.Gesture import Gesture
 from modules.GestureLibs.GestureGenerator import GestureGenerator
 from modules.GestureLibs.GestureDetector import GestureDetector
 from modules.Finger import FingersGenerator
+from pynput import keyboard
 
 '''
 TODO
@@ -23,6 +24,7 @@ logging_list = []
 fps_list = []
 FingersList = []
 #Other files will import this from run, not from FingersGenerator
+processes = []
 
 def on_run():
 
@@ -38,10 +40,7 @@ def on_run():
     camera_dir = args["camera_dir"]
     config_path = args["--set_config_path"]
 
-    Runner = Run(gui, debug, camera_dir, config_path)
-    Runner.run()
-        
-    return gui, debug, camera_dir, config_path
+    return {"gui":gui, "debug":debug, "camera_dir":camera_dir, "config_path":config_path} 
 
 class Run:
 
@@ -79,31 +78,34 @@ class Run:
 
 class ProcessController:
 
-    run_pid = int()
+    run_proc = None 
 
-    def __init__(self, run_proc):
-       self.run_proc = run_proc
+    def __init__(self):
+        pass
 
     def start_run(self):
-        global run_pid
+        global run_proc
         run_args = on_run()
-        Runner = Run(gui=run_args[0], debug=run_args[1], camera_dir=run_args[2], config_path=run_args[3])
+        Runner = Run(gui=run_args["config_path"], debug=run_args["debug"], camera_dir=run_args["camera_dir"], config_path=run_args["config_path"])
         run_proc = multiprocessing.Process(target=Runner.run)
-        run_proc.start()
-        run_pid = os.getpid()
+        
+    def kill_run(self, key):
+        if key == keyboard.key.q: 
 
-    def kill_run(self):
-        try:
-            os.kill(run_pid, signal.SIGTERM) 
-        except BaseException as e:
-            print(f"Terminating process with pid %s resulted in error %s" % (run_pid, e))
+            try:
+                run_proc.terminate()
+            except BaseException as e:
+                print(f"Terminating process resulted in error %s" % e)
 
-    def get_run_info(self):
-        global run_pid
-
-        print(f"Process ID: %s \n" % run_pid)
-       
-
+            return False # Stops listener
 
 if __name__ == "__main__":
     on_run()
+    Controller = ProcessController()
+    run_proc =Controller.start_run()
+    listener = keyboard.Listener(on_press=Controller.kill_run)
+    processes.append(run_proc)
+    processes.append(listener)
+    for process in processes:
+        process.start()
+        process.join()
