@@ -22,11 +22,12 @@ TODO
 # This will contain all the coordinates from the frames
 logging_list = []
 fps_list = []
-FingersList = []
-#Other files will import this from run, not from FingersGenerator
+# Other files will import this from run, not from FingersGenerator
 processes = []
 
 def on_run():
+    
+    # parses arguments passed in on launch
 
     ap = argparse.ArgumentParser()
     ap.add_argument("-g", "--gui", type=bool, required=False, help="Run with GUI")
@@ -44,6 +45,9 @@ def on_run():
 
 class Run:
 
+    FingersList = []
+    GestureList = []
+
     def __init__(self, gui: bool = True, debug: bool = False,  camera_dir = "/dev/video0", config_path="config"):
         self.gui = gui
         self.debug = debug
@@ -51,9 +55,19 @@ class Run:
         self.config = config_path
 
     def run(self):
+       
+        # Creates list of fingers and gestures
+        global FingersGenerator
+        FingersGenerator = FingersGenerator()
+        FingersList = FingersGenerator.create_fingers()
+
+        global GestureGenerator
+        GestureGenerator = GestureGenerator(self.config)
+        GestureList = GestureGenerator.read_config()
+
         global logging_list
         global fps_list
-        
+       
         capture = cv2.VideoCapture(0)
         detector = HandDetector()
         prevTime = 0
