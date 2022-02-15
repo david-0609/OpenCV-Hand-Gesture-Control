@@ -20,20 +20,10 @@ A detection window will be started as soon as all 5 fingers are found on screen,
 
 ## Screenshots
 
-## Usage Examples
+## Usage Example
 
-#### With GUI
-	python run.py --gui
-
-#### Without GUI
-	python run.py
-
-#### Verbose mode
-	python run.py --verbose
-
-#### Open Config
-	python run.py --set-config [file]
-
+	python run.py --gui=True --debug=false --camera-dir="/dev/video0" 
+	
 ### Acknowledgements
 
 Many Thanks to:
