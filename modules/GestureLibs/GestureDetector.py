@@ -11,9 +11,15 @@ pparentdir = os.path.dirname(parentdir)
 sys.path.append(pparentdir)
 
 from Finger import FingerTipList
-from run import FingersList, logging_list
+from run import Run
+from run import logging_list
+from modules.Tools import findMajority
+
+FingersList = Run.FingersList
 
 FINGERTIPS = FingerTipList
+
+FingerTipsData = []
 
 @dataclass
 class FingerTips:
@@ -32,7 +38,7 @@ class GestureDetector:
     def start_detection(self):
         fingers_up = []
         detection_frames = []
-        for finger in FingerList:
+        for finger in FingersList:
             if finger.is_up == True:
                 fingers_up.append(finger.is_up)
         if len(fingers_up) == 5:
@@ -46,17 +52,17 @@ class GestureDetector:
         return detection_frames
         
     def parse_fingertips(self):
-        global FingerTipList
+        global FingerTipsData 
         for id in FINGERTIPS:
-            FingerTipList.append(FingerTips(id, [], [], ""))
+            FingerTipsData.append(FingerTips(id, [], [], ""))
         
-    def parse_list(self) -> list:
+    def parse_list(self):
+        global FingerTipsData
         for coord in self.detection_frames:
-            for tip in FingerTipList:
+            for tip in FingerTipsData:
                 if coord[0] == tip.id:
                     tip.x_coord.append(coord[1])
                     tip.y_coord.append(coord[2])
-        return FingerTipList
                     
     def identify_dir(self):
         '''
@@ -94,5 +100,30 @@ class GestureDetector:
     
     def match_gesture(self):
         # Match previous information to a gesture
-        pass
-    
+        UpIDList = []
+        UpList = []
+        DirectionsList = []
+        GestureDirection = ""
+
+        for finger in FingersList:
+            if finger.is_up:
+                UpIDList.append(finger.tip)
+                UpList.append(finger)
+
+        for fingertip in FingerTipsData:
+            if fingertip.id in UpIDList:
+                DirectionsList.append(fingertip.direction)
+        
+        for dir in DirectionsList:
+            if dir == "r":
+                dir = 1
+            elif dir == "l":
+                dir = 2
+            elif dir == "u":
+                dir = 3
+            elif dir == "d":
+                dir = 4
+
+        GestureDirection = findMajority(DirectionsList)
+        
+        return GestureDirection                

@@ -17,10 +17,10 @@ class Gesture():
         global error_log
         
         try:
-            for key in action:                
+            for key in self.action:                
                 keyDown(key)
                     
-            for key in action:
+            for key in self.action:
                 keyUp(key)
                 
         except BaseException as e:
