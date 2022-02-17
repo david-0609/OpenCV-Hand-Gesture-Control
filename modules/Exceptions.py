@@ -9,3 +9,9 @@ class ConfigError(BaseException):
     def __init__(self, message="Possible error in syntax of config."):
         self.message = message
         super().__init__(self.message)
+        
+class GestureNotDetermined(BaseException):
+
+    def __init__(self, message="The Gesture did not match with any registered gestures"):
+        self.message = message
+        super().__init__(self.message)

@@ -105,8 +105,8 @@ class ProcessController:
         
     def kill_run(self, key):
         if key == keyboard.key.q: 
-
             try:
+                print("Attempting to terminate process")
                 run_proc.terminate()
             except BaseException as e:
                 print(f"Terminating process resulted in error %s" % e)

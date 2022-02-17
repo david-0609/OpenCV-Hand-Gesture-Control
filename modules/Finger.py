@@ -6,7 +6,8 @@ FingerTipList = []
 class Finger():
 
     # Factory Design Pattern    
-    def __init__(self, ids: list, finger_id=None) -> None:
+    def __init__(self, name, ids: list, finger_id=None) -> None:
+        self.name = name
         self.ids = ids
         self.tip = ids[0]
         self.finger_id = finger_id
@@ -47,11 +48,11 @@ class FingersGenerator:
 
     def create_fingers(self):
         # Creates the fingers
-        Thumb = Finger(finger_id=1, ids=[1,2,3,4])
-        IndexFinger = Finger(finger_id=2, ids=[5,6,7,8])
-        MiddleFinger = Finger(finger_id=3, ids=[9,10,11,12])
-        RingFinger = Finger(finger_id=4, ids=[13,14,15,16])
-        LittleFinger = Finger(finger_id=5, ids=[17,18,19,20])
+        Thumb = Finger(name = "Thumb", finger_id=1, ids=[1,2,3,4])
+        IndexFinger = Finger(name = "Indexfinger", finger_id=2, ids=[5,6,7,8])
+        MiddleFinger = Finger(name = "MiddleFinger", finger_id=3, ids=[9,10,11,12])
+        RingFinger = Finger(name = "RingFinger", finger_id=4, ids=[13,14,15,16])
+        LittleFinger = Finger(name = "LittleFinger", finger_id=5, ids=[17,18,19,20])
         FingerList = [Thumb,IndexFinger,MiddleFinger,RingFinger,LittleFinger]
         
         return FingerList

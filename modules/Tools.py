@@ -40,3 +40,11 @@ def findMajority(arr):
        majority = arr[index] 
 
     return majority
+
+def is_identical(list_a, list_b):
+    if len(list_a) != len(list_b):
+        return False
+    for i in list_a:
+        if i not in list_b:
+            return False
+    return True
