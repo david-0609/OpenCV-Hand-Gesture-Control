@@ -30,26 +30,23 @@ def on_run():
     # parses arguments passed in on launch
 
     ap = argparse.ArgumentParser()
-    ap.add_argument("-g", "--gui", type=bool, required=False, help="Run with GUI")
     ap.add_argument("-d", "--debug", type=bool, required=False, help="Print out debug info in console")
     ap.add_argument("--camera-dir", type=str, required=True, help="Directory of webcam e.g. /dev/video0")
     ap.add_argument("--set_config_path", type=str, required=False, help="Set the path of the config file")
     args = vars(ap.parse_args())
 
-    gui = args["gui"]
     debug = args["debug"]
     camera_dir = args["camera_dir"]
     config_path = args["--set_config_path"]
 
-    return {"gui":gui, "debug":debug, "camera_dir":camera_dir, "config_path":config_path} 
+    return {"debug":debug, "camera_dir":camera_dir, "config_path":config_path} 
 
 class Run:
 
     FingersList = []
     GestureList = []
 
-    def __init__(self, gui: bool = True, debug: bool = False,  camera_dir = "/dev/video0", config_path="config"):
-        self.gui = gui
+    def __init__(self, debug: bool = False,  camera_dir = "/dev/video0", config_path="config"):
         self.debug = debug
         self.camera_dir = camera_dir
         self.config = config_path
@@ -59,11 +56,15 @@ class Run:
         # Creates list of fingers and gestures
         global FingersGenerator
         FingersGenerator = FingersGenerator()
-        FingersList = FingersGenerator.create_fingers()
+        self.FingersList = FingersGenerator.create_fingers()
 
         global GestureGenerator
         GestureGenerator = GestureGenerator(self.config)
-        GestureList = GestureGenerator.read_config()
+        self.GestureList = GestureGenerator.read_config()
+        
+        global GestureDetector
+        GestureDetector = GestureDetector()
+        GestureDetector.parse_fingertips()
 
         global logging_list
         global fps_list
@@ -80,16 +81,17 @@ class Run:
             
             lmList = detector.fdPositions(frame)
             logging_list.append(lmList)
-                    
-            currTime = time.time()
-            fps = 1 / (currTime-prevTime)
-            prevTime = currTime
-            fps_list.append(fps)
             
-            cv2.putText(frame, str(int(fps)), (10, 70), cv2.FONT_HERSHEY_PLAIN, 3, (0,0,255), thickness=3)
-            cv2.imshow("Video", frame)
-            cv2.waitKey(1)
-
+            if self.debug:
+                currTime = time.time()
+                fps = 1 / (currTime-prevTime)
+                prevTime = currTime
+                fps_list.append(fps)
+                
+                cv2.putText(frame, str(int(fps)), (10, 70), cv2.FONT_HERSHEY_PLAIN, 3, (0,0,255), thickness=3)
+                cv2.imshow("Video", frame)
+                cv2.waitKey(1)
+           
 class ProcessController:
 
     run_proc = None 
@@ -100,7 +102,7 @@ class ProcessController:
     def start_run(self):
         global run_proc
         run_args = on_run()
-        Runner = Run(gui=run_args["config_path"], debug=run_args["debug"], camera_dir=run_args["camera_dir"], config_path=run_args["config_path"])
+        Runner = Run(debug=run_args["debug"], camera_dir=run_args["camera_dir"], config_path=run_args["config_path"])
         run_proc = multiprocessing.Process(target=Runner.run)
         
     def kill_run(self, key):
