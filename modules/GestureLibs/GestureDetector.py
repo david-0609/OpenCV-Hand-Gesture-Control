@@ -2,6 +2,7 @@ from dataclasses import dataclass
 import time
 import sys
 import os
+import warnings
 from modules.Exceptions import DirectionNotDetermined, GestureNotDetermined
 
 currentdir = os.path.dirname(os.path.realpath(__file__))
@@ -12,14 +13,7 @@ sys.path.append(pparentdir)
 from Finger import FingerTipList
 from run import Run
 from run import logging_list
-from modules.Tools import findMajority, is_identical
-
-FingersList = Run.FingersList
-GestureList = Run.GestureList
-
-FINGERTIPS = FingerTipList
-
-FingerTipsData = []
+from modules.Tools import findMajority, is_identical, convert_dir_id
 
 @dataclass
 class FingerTips:
@@ -30,36 +24,47 @@ class FingerTips:
     direction: str
 
 class GestureDetector:
-    
-    def __init__(self, detection_frames: list, gestures) -> None:
-        self.detection_frames = detection_frames
-        self.gestures = gestures
+     
+    FingersList = Run.FingersList
+    GestureList = Run.GestureList
+    FINGERTIPS = FingerTipList
+  
+    FingerTipsData = []
+    detection_frames = []
+
+    def __init__(self) -> None:
+        pass
+
+    def parse_fingertips(self):
+        for id in self.FINGERTIPS:
+            self.FingerTipsData.append(FingerTips(id, [], [], ""))
         
     def start_detection(self):
         fingers_up = []
-        detection_frames = []
-        for finger in FingersList:
+        fingers_detected = None
+        for finger in self.FingersList:
             if finger.is_up == True:
                 fingers_up.append(finger.is_up)
         if len(fingers_up) == 5:
             time.sleep(0.5) #sleeps 0.6 seconds for the user to change to the actual gesture
             start = time.time()
             while int(time.time())-start < 3: # 2 second detection window
-                detection_frames.append(logging_list[-1]) 
+                self.detection_frames.append(logging_list[-1]) 
                 if logging_list[-1] == False:
-                    print("No fingers found, exiting")
+                    warnings.warn("No fingers found, detection window not starting")
+                    fingers_detected = False
                     break
-        return detection_frames
-        
-    def parse_fingertips(self):
-        global FingerTipsData 
-        for id in FINGERTIPS:
-            FingerTipsData.append(FingerTips(id, [], [], ""))
-        
+                else:
+                    fingers_detected = True
+
+            if fingers_detected:
+                return self.detection_frames 
+            else:
+                return False
+
     def parse_list(self):
-        global FingerTipsData
         for coord in self.detection_frames:
-            for tip in FingerTipsData:
+            for tip in self.FingerTipsData:
                 if coord[0] == tip.id:
                     tip.x_coord.append(coord[1])
                     tip.y_coord.append(coord[2])
@@ -96,8 +101,6 @@ class GestureDetector:
                 elif first_y < middle_y < final_y:
                     fingertip.direction = "d"
         
-        return FingerTipList
-    
     def match_gesture(self):
         # Match previous information to a gesture
         UpIDList = []
@@ -105,42 +108,20 @@ class GestureDetector:
         DirectionsList = []
         GestureDirection = ""
 
-        for finger in FingersList:
+        for finger in self.FingersList:
             if finger.is_up:
                 UpIDList.append(finger.tip)
                 UpList.append(finger)
 
-        for fingertip in FingerTipsData:
+        for fingertip in self.FingerTipsData:
             if fingertip.id in UpIDList:
                 DirectionsList.append(fingertip.direction)
          
-        def convert_dir_id(dir):
-            if type(dir) == list:
-                for d in dir:
-                    if d == "r":
-                        d = 1
-                    elif d == "l":
-                        d = 2
-                    elif d == "u":
-                        d = 3
-                    elif d == "d":
-                        d = 4
-            if type(dir) == int:
-                if dir == 1:
-                    dir = "r"
-                elif dir == 2:
-                    dir = "l"
-                elif dir == 3:
-                    dir = "u"
-                elif dir == 4:
-                    dir = "d"
-            return dir
-        
         DirectionsList = convert_dir_id(DirectionsList)
         GestureDirection = findMajority(DirectionsList)
         GestureDirection = convert_dir_id(GestureDirection) 
 
-        for gesture in GestureList: 
+        for gesture in self.GestureList: 
             if GestureDirection == gesture.direction and is_identical(UpList, gesture.fingers_up):
                 gesture.exec_action()
             else:

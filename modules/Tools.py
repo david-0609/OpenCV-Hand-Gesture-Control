@@ -48,3 +48,27 @@ def is_identical(list_a, list_b):
         if i not in list_b:
             return False
     return True
+
+def convert_dir_id(dir):
+        if type(dir) == list:
+            for d in dir:
+                if d == "r":
+                    d = 1
+                elif d == "l":
+                    d = 2
+                elif d == "u":
+                    d = 3
+                elif d == "d":
+                    d = 4
+        if type(dir) == int:
+            if dir == 1:
+                dir = "r"
+            elif dir == 2:
+                dir = "l"
+            elif dir == 3:
+                dir = "u"
+            elif dir == 4:
+                dir = "d"
+        return dir
+    
+
