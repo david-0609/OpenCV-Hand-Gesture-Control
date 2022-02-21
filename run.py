@@ -1,9 +1,8 @@
 import argparse
 import multiprocessing
 import cv2
-import os, time, signal
+import time
 from modules.HandDetector import HandDetector
-from modules.GestureLibs.Gesture import Gesture
 from modules.GestureLibs.GestureGenerator import GestureGenerator
 from modules.GestureLibs.GestureDetector import GestureDetector
 from modules.Finger import FingersGenerator
@@ -16,7 +15,8 @@ TODO
 - Initialise Fingers from a config file (Not Needed)
 - Figure out a way to start the detection window and track frames (Done)
 - Init gesture actions from config file. (Done)
-- Refactor run.py
+- Refactor run.py (Mostly complete)
+- Testing
 '''
 
 # This will contain all the coordinates from the frames
@@ -28,11 +28,10 @@ processes = []
 def on_run():
     
     # parses arguments passed in on launch
-
     ap = argparse.ArgumentParser()
     ap.add_argument("-d", "--debug", type=bool, required=False, help="Print out debug info in console")
     ap.add_argument("--camera-dir", type=str, required=True, help="Directory of webcam e.g. /dev/video0")
-    ap.add_argument("--set_config_path", type=str, required=False, help="Set the path of the config file")
+    ap.add_argument("--set-config-path", type=str, required=False, help="Set the path of the config file")
     args = vars(ap.parse_args())
 
     debug = args["debug"]
@@ -50,9 +49,7 @@ class Run:
         self.debug = debug
         self.camera_dir = camera_dir
         self.config = config_path
-
-    def run(self):
-       
+ 
         # Creates list of fingers and gestures
         global FingersGenerator
         FingersGenerator = FingersGenerator()
@@ -66,6 +63,8 @@ class Run:
         GestureDetector = GestureDetector()
         GestureDetector.parse_fingertips()
 
+    def run(self):
+        
         global logging_list
         global fps_list
        
@@ -106,14 +105,16 @@ class ProcessController:
         run_proc = multiprocessing.Process(target=Runner.run)
         
     def kill_run(self, key):
-        if key == keyboard.key.q: 
-            try:
+        print("Press Q to stop program")
+        try:
+            if key.char == "q" or "Q":  
                 print("Attempting to terminate process")
                 run_proc.terminate()
-            except BaseException as e:
-                print(f"Terminating process resulted in error %s" % e)
+                return False # Stops listener  
+        except BaseException as e:
+            print(f"Terminating process resulted in error %s" % e)
 
-            return False # Stops listener
+        return False # Stops listener
 
 if __name__ == "__main__":
     on_run()
