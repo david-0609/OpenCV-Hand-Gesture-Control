@@ -1,0 +1,18 @@
+# Directions:
+# u = up, d = down, l = left, r = right
+
+# Action:
+# This should be a key or a combinations of keys separated by a comma
+
+# How to find keystrokes:
+# Use a key logging tool such as Screenkey to find the name of the key you pressed
+
+# Example
+[GESTURE1]
+name = 2-Finger-Up-Swipe
+fingers_up = 2
+direction = up
+action = PgUp 
+
+
+
