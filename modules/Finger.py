@@ -62,4 +62,5 @@ class FingersGenerator:
         for finger in FingerTipList:
         
             FingerTipList.append(finger.tip)
+            return FingerTipList
 

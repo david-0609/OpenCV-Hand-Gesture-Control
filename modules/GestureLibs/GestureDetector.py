@@ -116,13 +116,16 @@ class GestureDetector:
         for fingertip in self.FingerTipsData:
             if fingertip.id in UpIDList:
                 DirectionsList.append(fingertip.direction)
-         
+        
+        # To find the majority of the directions of fingers, the fingers direction have to be mapped to an integer value 
         DirectionsList = convert_dir_id(DirectionsList)
         GestureDirection = findMajority(DirectionsList)
         GestureDirection = convert_dir_id(GestureDirection) 
 
-        for gesture in self.GestureList: 
+        for gesture in self.GestureList:
+            # Now matches gesture with the GestureList that was imported from main
             if GestureDirection == gesture.direction and is_identical(UpList, gesture.fingers_up):
                 gesture.exec_action()
             else:
                 raise GestureNotDetermined  
+

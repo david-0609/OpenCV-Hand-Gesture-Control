@@ -109,7 +109,7 @@ class ProcessController:
         try:
             if key.char == "q" or "Q":  
                 print("Attempting to terminate process")
-                run_proc.terminate()
+                self.run_proc.terminate()
                 return False # Stops listener  
         except BaseException as e:
             print(f"Terminating process resulted in error %s" % e)
