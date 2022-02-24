@@ -6,13 +6,12 @@
 
 # How to find keystrokes:
 # Use a key logging tool such as Screenkey to find the name of the key you pressed
+# The key press uses pyautogui, for a list of keys refer to the documentation here: https://pyautogui.readthedocs.io/en/latest/keyboard.html
 
-# Example
 [GESTURE1]
 name = 2-Finger-Up-Swipe
 fingers_up = 2
-direction = up
-action = PgUp 
-
+direction = u
+action = pageup
 
 

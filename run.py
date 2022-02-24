@@ -19,6 +19,8 @@ TODO
 - Testing
 '''
 
+ErrorLog = []
+
 # This will contain all the coordinates from the frames
 logging_list = []
 fps_list = []

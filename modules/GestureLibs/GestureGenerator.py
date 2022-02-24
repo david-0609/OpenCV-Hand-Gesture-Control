@@ -16,8 +16,8 @@ class GestureGenerator:
             gesture_name = config[section][name]
             gesture_action = config[section][action]
             gesture_fingers_up = config[section][fingers_up]
-            gesture_direction = config[section][direction] 
-            GestureList.append(Gesture(str(gesture_name), str(gesture_action), str(gesture_fingers_up), str(gesture_direction)))           
+            gesture_direction = config[section][direction]
+            GestureList.append(Gesture(str(gesture_name), gesture_action.split(","), str(gesture_fingers_up), str(gesture_direction)))           
         return GestureList
 
     def write_config(self, name, fingers_up, direction, action):
