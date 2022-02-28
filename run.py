@@ -20,6 +20,7 @@ TODO
 '''
 
 ErrorLog = []
+arguments = {}
 
 # This will contain all the coordinates from the frames
 logging_list = []
@@ -27,7 +28,7 @@ fps_list = []
 # Other files will import this from run, not from FingersGenerator
 processes = []
 
-def on_run():
+def get_arguments():
     
     # parses arguments passed in on launch
     ap = argparse.ArgumentParser()
@@ -52,7 +53,7 @@ class Run:
         self.camera_dir = camera_dir
         self.config = config_path
  
-        # Creates list of fingers and gestures
+        # Creates list of fingers and gestures, the variabl;es are globaled here for them to be accesible
         global FingersGenerator
         FingersGenerator = FingersGenerator()
         self.FingersList = FingersGenerator.create_fingers()
@@ -95,17 +96,14 @@ class Run:
            
 class ProcessController:
 
-    run_proc = None 
-
     def __init__(self):
         pass
 
     def start_run(self):
-        global run_proc
-        run_args = on_run()
-        Runner = Run(debug=run_args["debug"], camera_dir=run_args["camera_dir"], config_path=run_args["config_path"])
+        Runner = Run(debug=arguments["debug"], camera_dir=arguments["camera_dir"], config_path=arguments["config_path"])
         run_proc = multiprocessing.Process(target=Runner.run)
-        
+        return run_proc
+
     def kill_run(self, key):
         print("Press Q to stop program")
         try:
@@ -119,7 +117,7 @@ class ProcessController:
         return False # Stops listener
 
 if __name__ == "__main__":
-    on_run()
+    arguments = get_arguments()
     Controller = ProcessController()
     run_proc =Controller.start_run()
     listener = keyboard.Listener(on_press=Controller.kill_run)
