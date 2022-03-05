@@ -34,7 +34,7 @@ def get_arguments():
     ap = argparse.ArgumentParser()
     ap.add_argument("-d", "--debug", type=bool, required=False, help="Print out debug info in console")
     ap.add_argument("--camera-dir", type=str, required=True, help="Directory of webcam e.g. /dev/video0")
-    ap.add_argument("--set-config-path", type=str, required=False, help="Set the path of the config file")
+    ap.add_argument("--config-path", type=str, required=False, help="Set the path of the config file")
     args = vars(ap.parse_args())
 
     debug = args["debug"]

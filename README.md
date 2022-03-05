@@ -12,7 +12,7 @@ This program reads in coordinates of finger landmarks (see landmarks.png) and us
 	pip install -r requirements.txt
 
 ## Generalised Approach
-<s> 1. The model will draw a covex hull around the hand after separating the hand from the background, using the convex hull, find fingertips and track for gestures</s>
+<s> 1. The model will draw a covex hull around the hand after separating the hand from the background, using the convex hull, find fingertips and track for gestures (See experiement1.py) </s>
 ### 2. Use preexisting mediapipe model to track hand (more feasible) and use in GUI/TUI application.
 Algorithm to use: https://google.github.io/mediapipe/solutions/hands.html
 
@@ -25,8 +25,12 @@ A detection window will be started as soon as all 5 fingers are found on screen,
 
 ## Usage Example
 
-	python run.py --gui=True --debug=false --camera-dir="/dev/video0" 
-	
+Running without specifying config file (defaults to `config` in home directory)
+	python run.py --debug --camera-dir="/dev/video0" 
+
+Running with specific config file
+    python run.py --debug --camera-dir="/dev/video0" --config-path="/path/to/config"
+  
 ### Acknowledgements
 
 Many Thanks to:
