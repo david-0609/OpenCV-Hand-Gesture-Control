@@ -1,5 +1,5 @@
 from configparser import ConfigParser
-from Gesture import Gesture
+import Gesture
 
 class GestureGenerator:
 
@@ -17,9 +17,6 @@ class GestureGenerator:
             gesture_action = config[section]["action"]
             gesture_fingers_up = config[section]["fingers_up"]
             gesture_direction = config[section]["direction"]
-            GestureList.append(Gesture(str(gesture_name), gesture_action.split(","), gesture_fingers_up.split(","), str(gesture_direction)))
+            GestureList.append(Gesture.Gesture(str(gesture_name), gesture_action.split(","), gesture_fingers_up.split(","), str(gesture_direction)))
         return GestureList
 
-    def write_config(self, name, fingers_up, direction, action):
-        pass
-        # Will be implemented later, may connect to gui to record configs

@@ -4,16 +4,16 @@ import sys
 import os
 import warnings
 from modules.Exceptions import DirectionNotDetermined, GestureNotDetermined
+from ..Finger import FingerTipList
+from Tools import findMajority, is_identical, convert_dir_id
 
 currentdir = os.path.dirname(os.path.realpath(__file__))
 parentdir = os.path.dirname(currentdir)
 pparentdir = os.path.dirname(parentdir)
 sys.path.append(pparentdir)
 
-from Finger import FingerTipList
 from run import Run
 from run import logging_list
-from modules.Tools import findMajority, is_identical, convert_dir_id
 
 @dataclass
 class FingerTips:
