@@ -1,12 +1,28 @@
+ErrorLog = []
+arguments = {}
+
+# This will contain all the coordinates from the frames
+logging_list = []
+fps_list = []
+# Other files will import this from run, not from FingersGenerator
+processes = []
+
+import sys, os
+print(sys.path)
+currpath = os.getcwd()
+sys.path.append(currpath+"/modules")
+sys.path.append(currpath+"/modules/GestureLibs")
+print(sys.path)
 import argparse
 import multiprocessing
 import cv2
 import time
-from modules.HandDetector import HandDetector
-from modules.GestureLibs.GestureGenerator import GestureGenerator
-from modules.GestureLibs.GestureDetector import GestureDetector
-from modules.Finger import FingersGenerator
 from pynput import keyboard
+import modules.HandDetector as HandDetector
+import modules.GestureLibs.GestureDetector as GestureDetector
+import modules.GestureLibs.GestureGenerator as GestureGenerator
+import modules.Finger as Finger
+import modules.FingersGenerator as FingersGenerator
 
 '''
 TODO
@@ -18,16 +34,6 @@ TODO
 - Refactor run.py (Mostly complete)
 - Testing
 '''
-
-ErrorLog = []
-arguments = {}
-
-# This will contain all the coordinates from the frames
-logging_list = []
-fps_list = []
-# Other files will import this from run, not from FingersGenerator
-processes = []
-
 def get_arguments():
     
     # parses arguments passed in on launch
@@ -52,18 +58,18 @@ class Run:
         self.debug = debug
         self.camera_dir = camera_dir
         self.config = config_path
- 
-        # Creates list of fingers and gestures, the variabl;es are globaled here for them to be accesible
         global FingersGenerator
-        FingersGenerator = FingersGenerator()
+        global GestureGenerator
+        global GestureDetector
+
+        # Creates list of fingers and gestures, the variabl;es are globaled here for them to be accesible
+        FingersGenerator = FingersGenerator.FingersGenerator()
         self.FingersList = FingersGenerator.create_fingers()
 
-        global GestureGenerator
-        GestureGenerator = GestureGenerator(self.config)
+        GestureGenerator = GestureGenerator.GestureGenerator(self.config)
         self.GestureList = GestureGenerator.read_config()
         
-        global GestureDetector
-        GestureDetector = GestureDetector()
+        GestureDetector = GestureDetector.GestureDetector()
         GestureDetector.parse_fingertips()
 
     def run(self):
@@ -72,7 +78,7 @@ class Run:
         global fps_list
        
         capture = cv2.VideoCapture(0)
-        detector = HandDetector()
+        detector = HandDetector.HandDetector()
         prevTime = 0
         currTime = 0
                 
@@ -95,14 +101,13 @@ class Run:
                 cv2.waitKey(1)
            
 class ProcessController:
-
+    run_proc = None
     def __init__(self):
         pass
 
     def start_run(self):
         Runner = Run(debug=arguments["debug"], camera_dir=arguments["camera_dir"], config_path=arguments["config_path"])
-        run_proc = multiprocessing.Process(target=Runner.run)
-        return run_proc
+        self.run_proc = multiprocessing.Process(target=Runner.run)
 
     def kill_run(self, key):
         print("Press Q to stop program")
@@ -115,7 +120,7 @@ class ProcessController:
             print(f"Terminating process resulted in error %s" % e)
 
         return False # Stops listener
-
+'''
 if __name__ == "__main__":
     arguments = get_arguments()
     Controller = ProcessController()
@@ -126,3 +131,4 @@ if __name__ == "__main__":
     for process in processes:
         process.start()
         process.join()
+'''

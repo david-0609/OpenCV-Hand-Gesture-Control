@@ -4,7 +4,7 @@ import sys
 import os
 import warnings
 from modules.Exceptions import DirectionNotDetermined, GestureNotDetermined
-from ..Finger import FingerTipList
+from Finger import FingerTipList
 from Tools import findMajority, is_identical, convert_dir_id
 
 currentdir = os.path.dirname(os.path.realpath(__file__))
