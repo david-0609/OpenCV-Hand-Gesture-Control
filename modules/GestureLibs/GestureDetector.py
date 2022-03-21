@@ -6,14 +6,12 @@ import warnings
 from modules.Exceptions import DirectionNotDetermined, GestureNotDetermined
 from Finger import FingerTipList
 from Tools import findMajority, is_identical, convert_dir_id
-
 currentdir = os.path.dirname(os.path.realpath(__file__))
 parentdir = os.path.dirname(currentdir)
 pparentdir = os.path.dirname(parentdir)
 sys.path.append(pparentdir)
 
 from run import Run
-from run import logging_list
 
 @dataclass
 class FingerTips:
@@ -27,6 +25,7 @@ class GestureDetector:
      
     FingersList = Run.FingersList
     GestureList = Run.GestureList
+    
     FINGERTIPS = FingerTipList
   
     FingerTipsData = []
@@ -40,6 +39,9 @@ class GestureDetector:
             self.FingerTipsData.append(FingerTips(id, [], [], ""))
         
     def start_detection(self):
+        
+        from run import logging_list
+
         fingers_up = []
         fingers_detected = None
         for finger in self.FingersList:

@@ -2,6 +2,8 @@
 
 Made by david-0609, for the FSFE YH4F Coding Competition 2021
 
+[![Stand With Ukraine](https://raw.githubusercontent.com/vshymanskyy/StandWithUkraine/main/banner2-direct.svg)](https://vshymanskyy.github.io/StandWithUkraine)
+
 ## Description
 
 This program reads in coordinates of finger landmarks (see landmarks.png) and uses the data to find fingters that are up and by tracking the movements of the fingertips, detects a gesture and executes a keyboard shortcut linked to it. A premade module for hand detection is used and OpenCV is used to record dta from the webcam. The program is designed modularly and uses a facade design pattern, with the module Run being the facade object. The library being used to execure keystrokes is pyautogui, which can only be used under a GUI environment. Configparser is used to read in the config file, see https://docs.python.org/3/library/configparser.html for detailed explanation of the format. The algorithm used to detect the direcion of travel of the finger is quite simple and can be improved to use a more sophisticated method for a better result, for the purpose of this project, the accuracy is sufficient. 

@@ -21,7 +21,6 @@ from pynput import keyboard
 import modules.HandDetector as HandDetector
 import modules.GestureLibs.GestureDetector as GestureDetector
 import modules.GestureLibs.GestureGenerator as GestureGenerator
-import modules.Finger as Finger
 import modules.FingersGenerator as FingersGenerator
 
 '''
@@ -55,19 +54,18 @@ class Run:
     GestureList = []
 
     def __init__(self, debug: bool = False,  camera_dir = "/dev/video0", config_path="config"):
+
         self.debug = debug
         self.camera_dir = camera_dir
         self.config = config_path
+ 
         global FingersGenerator
-        global GestureGenerator
-        global GestureDetector
-
-        # Creates list of fingers and gestures, the variabl;es are globaled here for them to be accesible
         FingersGenerator = FingersGenerator.FingersGenerator()
         self.FingersList = FingersGenerator.create_fingers()
-
+        global GestureGenerator
         GestureGenerator = GestureGenerator.GestureGenerator(self.config)
         self.GestureList = GestureGenerator.read_config()
+        global GestureDetector
         
         GestureDetector = GestureDetector.GestureDetector()
         GestureDetector.parse_fingertips()
@@ -100,20 +98,21 @@ class Run:
                 cv2.imshow("Video", frame)
                 cv2.waitKey(1)
            
-class ProcessController:
+
     run_proc = None
     def __init__(self):
         pass
 
     def start_run(self):
-        Runner = Run(debug=arguments["debug"], camera_dir=arguments["camera_dir"], config_path=arguments["config_path"])
+        run_proc = multiprocessing.Process(target=Runner.run)
+        return run_proc
         self.run_proc = multiprocessing.Process(target=Runner.run)
 
     def kill_run(self, key):
         print("Press Q to stop program")
         try:
             if key.char == "q" or "Q":  
-                print("Attempting to terminate process")
+                self.run_proc.terminate()
                 self.run_proc.terminate()
                 return False # Stops listener  
         except BaseException as e:
