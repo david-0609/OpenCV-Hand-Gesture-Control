@@ -11,6 +11,7 @@ This program reads in coordinates of finger landmarks (see landmarks.png) and us
 ## Dependencies
 
 - Python 3.7, other versions of Python may not be compatible with the libraries
+- X11 GUI (Needed for pynput module) 
 - Numpy, OpenCV, mediapipe etc (see requirements.txt)
 
 ## Installation
