@@ -46,9 +46,9 @@ class GestureDetector:
         fingers_detected = None
         for finger in self.FingersList:
             if finger.is_up == True:
-                fingers_up.append(finger.is_up)
+                fimv ~/.config/nvim ~/.config/nvimbackupngers_up.append(finger.is_up)
         if len(fingers_up) == 5:
-            time.sleep(0.5) #sleeps 0.6 seconds for the user to change to the actual gesture
+            time.sleep(0.5) #sleeps 0.5 seconds for the user to change to the actual gesture
             start = time.time()
             while int(time.time())-start < 3: # 2 second detection window
                 self.detection_frames.append(logging_list[-1]) 

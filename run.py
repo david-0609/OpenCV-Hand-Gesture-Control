@@ -97,22 +97,22 @@ class Run:
                 cv2.putText(frame, str(int(fps)), (10, 70), cv2.FONT_HERSHEY_PLAIN, 3, (0,0,255), thickness=3)
                 cv2.imshow("Video", frame)
                 cv2.waitKey(1)
-           
+
+class Runner:
 
     run_proc = None
+
     def __init__(self):
         pass
 
     def start_run(self):
-        run_proc = multiprocessing.Process(target=Runner.run)
-        return run_proc
-        self.run_proc = multiprocessing.Process(target=Runner.run)
+        self.run_proc = multiprocessing.Process(target=Run.run)
+        return self.run_proc
 
     def kill_run(self, key):
         print("Press Q to stop program")
         try:
             if key.char == "q" or "Q":  
-                self.run_proc.terminate()
                 self.run_proc.terminate()
                 return False # Stops listener  
         except BaseException as e:
