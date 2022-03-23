@@ -8,8 +8,6 @@ The idea came to me from reading a ebook on my laptop, the pages were short and 
 
 The design pattern used for this project is Facade. I used this to abstract the interface of this program to a single object, which is `Run()` from `run.py`. As the only thing the user should do to interact with the program is to open the webcam, a facade stashes away the algorithm and makes the code simpler.The program is spilt modularly and the modules import certain data from `run.py`. Some functions dealing with basic operations such as sorting a list in a certain way, checking elements etc are put into `Tools.py` and imported when needed
 
-
-
 ## Key Libraries Used
 
 - mediapipe 
@@ -27,3 +25,6 @@ The design pattern used for this project is Facade. I used this to abstract the 
 - pickle
 
   - Built in Python library, used for caching configs such as the ids for fingers etc.
+
+## Default settings:
+- The detection window is 3 seconds, can be changed in the start_detection function in file GestureDetector.py 
