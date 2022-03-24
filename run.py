@@ -34,17 +34,25 @@ TODO
 - Testing
 '''
 def get_arguments():
-    
-    # parses arguments passed in on launch
+     # parses arguments passed in on launch
     ap = argparse.ArgumentParser()
-    ap.add_argument("-d", "--debug", type=bool, required=False, help="Print out debug info in console")
-    ap.add_argument("--camera-dir", type=str, required=True, help="Directory of webcam e.g. /dev/video0")
-    ap.add_argument("--config-path", type=str, required=False, help="Set the path of the config file")
-    args = vars(ap.parse_args())
+    ap.add_argument("--debug", type=bool, required=False, help="Print out debug info in console")
+    args = ap.parse_args()
+  
+    if args.debug:
+        debug = True
+    else:
+        debug = False
 
-    debug = args["debug"]
-    camera_dir = args["camera_dir"]
-    config_path = args["--set_config_path"]
+    camera_dir = os.environ["CAMERA_DIR"] 
+    if camera_dir == "":
+        camera_dir = "/dev/video0"
+        print("No camera directory specified, going with default /dev/video0")
+       
+    config_path = os.environ["CONFIG_PATH"]
+    if config_path == "":
+        config_path = ".config"
+        print("config file not specified, defaulting to '.config'")
 
     return {"debug":debug, "camera_dir":camera_dir, "config_path":config_path} 
 
