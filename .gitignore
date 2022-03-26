@@ -1,5 +1,10 @@
 *.bak
+<<<<<<< HEAD
 pickled_fingerslist
+=======
+.pickled_fingerslist
+.config
+>>>>>>> main
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

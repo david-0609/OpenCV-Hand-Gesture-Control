@@ -25,11 +25,15 @@ class GestureDetector:
     detection_window = 3 
     FingersList = Run.FingersList
     GestureList = Run.GestureList
-    
+     
     FINGERTIPS = FingerTipList
   
     FingerTipsData = []
     detection_frames = []
+    start_time = None 
+    end_time = None 
+    detection_start = False 
+    done = False
 
     def __init__(self) -> None:
         pass
@@ -37,38 +41,47 @@ class GestureDetector:
     def parse_fingertips(self):
         for id in self.FINGERTIPS:
             self.FingerTipsData.append(FingerTips(id, [], [], ""))
-        
+    
+    def reset(self):
+        self.detection_start = False
+        self.start_time = None
+        self.end_time = None
+        self.detection_frames = []
+        return False 
+
     def start_detection(self):
         
         from run import logging_list # imported on every call to have newest data
+        
+        if self.detection_start == False:
 
-        fingers_up = []
-        fingers_detected = None
-        for finger in self.FingersList:
-            if finger.is_up == True:
-                fingers_up.append(finger.is_up)
-        if len(fingers_up) == 5:
-            time.sleep(0.5) #sleeps 0.5 seconds for the user to change to the actual gesture
-            start = time.time()
-            while int(time.time())-start < self.detection_window: # 2 second detection window
-                self.detection_frames.append(logging_list[-1]) # Takes newest list of coordinates from run.py
-                if logging_list[-1] == False:
-                    warnings.warn("No fingers found, detection window not starting")
-                    fingers_detected = False
-                    break
-                else:
-                    fingers_detected = True
+            fingers_up = []
+            for finger in self.FingersList:
+                if finger.is_up == True:
+                    fingers_up.append(finger.is_up)
+                    if len(fingers_up) == 5:
+                        print("Starting detection")
+                        self.detection_start = True
+                        time.sleep(0.5) #sleeps 0.5 seconds for the user to change to the actual gesture
+            return True
 
-            if fingers_detected:
-                return self.detection_frames 
-            else:
-                return False
+        elif self.detection_start == True:
+            if self.start_time == None:
+                self.start_time = int(time.time())
+            if self.end_time == None:
+                self.end_time = time.time()+self.detection_window
+            now = int(time.time()) 
+            if now <= self.end_time:
+               self.detection_frames.append(logging_list[-1]) 
+            elif now >= self.end_time:
+                self.parse_list(self.detection_frames) 
+                return self.reset()
 
-    def parse_list(self):
+    def parse_list(self, frames):
         '''
         converts the detection_frames list to dataclass for easier processing
         '''
-        for coord in self.detection_frames:
+        for coord in frames:
             for tip in self.FingerTipsData:
                 if coord[0] == tip.id:
                     tip.x_coord.append(coord[1])
