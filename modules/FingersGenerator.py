@@ -3,11 +3,7 @@ from pathlib import Path
 
 class FingersGenerator:
 
-<<<<<<< HEAD
-    picklefile = r"pickled_fingerslist"
-=======
     picklefile = ".pickled_fingerslist"
->>>>>>> main
     
     def __init__(self) -> None:
         pass

@@ -3,7 +3,6 @@ arguments = {}
 
 # This will contain all the coordinates from the frames
 logging_list = []
-fps_list = []
 # Other files will import this from run, not from FingersGenerator
 processes = []
 
@@ -14,10 +13,8 @@ sys.path.append(currpath+"/modules")
 sys.path.append(currpath+"/modules/GestureLibs")
 print(sys.path)
 import argparse
-import multiprocessing
 import cv2
 import time
-from pynput import keyboard
 import modules.HandDetector as HandDetector
 
 '''
@@ -41,13 +38,9 @@ def get_arguments():
         debug = True
     else:
         debug = False
-    
-<<<<<<< HEAD
-    try: 
-        camera_dir = os.environ["CAMERA_DIR"] 
-    except KeyError:
-=======
+
     env = os.environ.copy()
+
     if "CAMERA_DIR" not in env:
         camera_dir = "/dev/video0"
     else:
@@ -58,21 +51,8 @@ def get_arguments():
     else:
         config_path = env.get("CONFIG_PATH")
 
-    '''
-    camera_dir = os.environ["CAMERA_DIR"] 
-    if camera_dir == "":
->>>>>>> main
-        camera_dir = "/dev/video0"
-        print("No camera directory specified, going with default /dev/video0")
-    
-    try:       
-        config_path = os.environ["CONFIG_PATH"]
-    except KeyError:
-        config_path = ".config"
-        print("config file not specified, defaulting to '.config'")
-    '''
-
     return {"debug":debug, "camera_dir":camera_dir, "config_path":config_path} 
+
 
 class Run:
     
@@ -85,30 +65,18 @@ class Run:
 
         self.debug = debug
         self.camera_dir = camera_dir
-<<<<<<< HEAD
-        self.config = config_path
+        self.config_path = config_path
  
         import modules.FingersGenerator as FingersGenerator
         FingersGenerator = FingersGenerator.FingersGenerator()
         self.FingersList = FingersGenerator.create_fingers()
     
         import modules.GestureLibs.GestureGenerator as GestureGenerator
-        GestureGenerator = GestureGenerator.GestureGenerator(self.config)
-        self.GestureList = GestureGenerator.read_config()
-
-        import modules.GestureLibs.GestureDetector as GestureDetector
-=======
-        self.config_path = config_path
-
-        global FingersGenerator
-        FingersGenerator = FingersGenerator.FingersGenerator()
-
-        global GestureGenerator
         GestureGenerator = GestureGenerator.GestureGenerator(self.config_path)
         self.GestureList = GestureGenerator.read_config()
 
-        global GestureDetector
->>>>>>> main
+        import modules.GestureLibs.GestureDetector as GestureDetector
+
         GestureDetector = GestureDetector.GestureDetector()
         GestureDetector.parse_fingertips()
         self.gesture_detector = GestureDetector
@@ -116,41 +84,12 @@ class Run:
     def run(self):
         
         global logging_list
-        global fps_list
        
         capture = cv2.VideoCapture(self.camera_dir)
         detector = HandDetector.HandDetector()
         prevTime = 0
         currTime = 0
-<<<<<<< HEAD
-        
-        try:
 
-            while True:
-                _, frame = capture.read()
-                frame = cv2.flip(frame, 1)
-                frame = detector.fdHands(frame)
-                
-                lmList = detector.fdPositions(frame)
-                logging_list.append(lmList)
-                
-                if self.debug:
-                    currTime = time.time()
-                    fps = 1 / (currTime-prevTime)
-                    prevTime = currTime
-                    fps_list.append(fps)
-                    
-                    cv2.putText(frame, str(int(fps)), (10, 70), cv2.FONT_HERSHEY_PLAIN, 3, (0,0,255), thickness=3)
-                    cv2.imshow("Video", frame)
-                    cv2.waitKey(1)
-
-        except BaseException as e:
-            print(e)
-            print("Video ended")
-
-class ProcessController:
-=======
-                
         while True:
             _, frame = capture.read()
             frame = cv2.flip(frame, 1)
@@ -159,67 +98,20 @@ class ProcessController:
             currTime = time.time()
             fps = 1 / (currTime-prevTime)
             prevTime = currTime
-            fps_list.append(fps)
-                
+ 
+            if self.debug:
+               
+                cv2.putText(frame, str(int(fps)), (10, 70), cv2.FONT_HERSHEY_PLAIN, 3, (0,0,255), thickness=3)
+                cv2.imshow("Video", frame)
+                cv2.waitKey(1)
+               
             lmList = detector.fdPositions(frame)
             logging_list.append(lmList)
             print(lmList)
             if self.gesture_detector.start_detection() == False:
                 logging_list = []
 
-            if self.debug:
-               
-                cv2.putText(frame, str(int(fps)), (10, 70), cv2.FONT_HERSHEY_PLAIN, 3, (0,0,255), thickness=3)
-                cv2.imshow("Video", frame)
-                cv2.waitKey(1)
-'''
-class Runner:
->>>>>>> main
-
-    run_proc = None
-
-    def __init__(self, runner):
-       self.runner = runner 
-
-    def start_run(self):
-        self.run_proc = multiprocessing.Process(target=self.runner.run)
-        return self.run_proc
-
-    def kill_run(self, key):
-        print("Press Q to stop program")
-        try:
-            if key.char == "q" or "Q":  
-                self.run_proc.terminate()
-                return False # Stops listener  
-        except BaseException as e:
-            print(f"Terminating process resulted in error %s" % e)
-
-        return False # Stops listener
-
-<<<<<<< HEAD
-def on_run():
-
-=======
-if __name__ == "__main__":
->>>>>>> main
-    arguments = get_arguments()
-    runner = Run(debug=arguments["debug"], camera_dir=arguments["camera_dir"], config_path=arguments["config_path"])
-    Controller = ProcessController(runner)
-    run_proc = Controller.start_run()
-    listener = keyboard.Listener(on_press=Controller.kill_run)
-    processes.append(run_proc)
-    processes.append(listener)
-    for process in processes:
-        process.start()
-        process.join()
-<<<<<<< HEAD
-
-if __name__ == "__main__":
-    on_run()
-=======
-'''
 if __name__ == "__main__":
     arguments = get_arguments()
     run = Run(arguments["debug"],arguments["camera_dir"],arguments["config_path"])
     run.run()
->>>>>>> main
