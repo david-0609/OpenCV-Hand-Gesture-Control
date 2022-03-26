@@ -39,13 +39,13 @@ A detection window will be started as soon as all 5 fingers are found on screen,
 
 ## Usage Example
 
-Running without specifying config file (defaults to `config` in home directory)
+Running with debug without specifying config file (defaults to `.config` in home directory)
 
-`python run.py --debug --camera-dir="/dev/video0"`
+`python run.py --debug=true "`
 
-Running with specific config file
+Running without debug
 
-`python run.py --debug --camera-dir="/dev/video0" --config-path="/path/to/config"`
+`python run.py`
 
 ### Acknowledgements
 

@@ -18,10 +18,6 @@ The design pattern used for this project is Facade. I used this to abstract the 
   
   - Licenced under Apache 2.0, captures webcam input
 
-- Multiprocessing
-  
-  - Built in Python package, allows the creation of seperate processes, in this case, one process runs in the background for hand detection, and another runs to control the process
-  
 - pickle
 
   - Built in Python library, used for caching configs such as the ids for fingers etc.
