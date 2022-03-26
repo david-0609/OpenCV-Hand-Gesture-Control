@@ -33,6 +33,7 @@ TODO
 - Refactor run.py (Mostly complete)
 - Testing
 '''
+
 def get_arguments():
      # parses arguments passed in on launch
     ap = argparse.ArgumentParser()
@@ -106,15 +107,15 @@ class Run:
                 cv2.imshow("Video", frame)
                 cv2.waitKey(1)
 
-class Runner:
+class ProcessController:
 
     run_proc = None
 
-    def __init__(self):
-        pass
+    def __init__(self, runner):
+       self.runner = runner 
 
     def start_run(self):
-        self.run_proc = multiprocessing.Process(target=Run.run)
+        self.run_proc = multiprocessing.Process(target=self.runner.run)
         return self.run_proc
 
     def kill_run(self, key):
@@ -127,15 +128,19 @@ class Runner:
             print(f"Terminating process resulted in error %s" % e)
 
         return False # Stops listener
-'''
-if __name__ == "__main__":
+
+def on_run():
+
     arguments = get_arguments()
-    Controller = ProcessController()
-    run_proc =Controller.start_run()
+    runner = Run(debug=arguments["debug"], camera_dir=arguments["camera_dir"], config_path=arguments["config_path"])
+    Controller = ProcessController(runner)
+    run_proc = Controller.start_run()
     listener = keyboard.Listener(on_press=Controller.kill_run)
     processes.append(run_proc)
     processes.append(listener)
     for process in processes:
         process.start()
         process.join()
-'''
+
+if __name__ == "__main__":
+    on_run()
