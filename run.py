@@ -43,7 +43,19 @@ def get_arguments():
         debug = True
     else:
         debug = False
+    
+    env = os.environ.copy()
+    if "CAMERA_DIR" not in env:
+        camera_dir = "/dev/video0"
+    else:
+        camera_dir = env.get("CAMERA_DIR")
 
+    if "CONFIG_PATH" not in env:
+        config_path = ".config"
+    else:
+        config_path = env.get("CONFIG_PATH")
+
+    '''
     camera_dir = os.environ["CAMERA_DIR"] 
     if camera_dir == "":
         camera_dir = "/dev/video0"
@@ -53,30 +65,34 @@ def get_arguments():
     if config_path == "":
         config_path = ".config"
         print("config file not specified, defaulting to '.config'")
+    '''
 
     return {"debug":debug, "camera_dir":camera_dir, "config_path":config_path} 
 
 class Run:
+    
+    gesture_detector = None
 
     FingersList = []
     GestureList = []
 
-    def __init__(self, debug: bool = False,  camera_dir = "/dev/video0", config_path="config"):
+    def __init__(self, debug: bool, camera_dir: str, config_path: str):
 
         self.debug = debug
         self.camera_dir = camera_dir
-        self.config = config_path
- 
+        self.config_path = config_path
+
         global FingersGenerator
         FingersGenerator = FingersGenerator.FingersGenerator()
-        self.FingersList = FingersGenerator.create_fingers()
+
         global GestureGenerator
-        GestureGenerator = GestureGenerator.GestureGenerator(self.config)
+        GestureGenerator = GestureGenerator.GestureGenerator(self.config_path)
         self.GestureList = GestureGenerator.read_config()
+
         global GestureDetector
-        
         GestureDetector = GestureDetector.GestureDetector()
         GestureDetector.parse_fingertips()
+        self.gesture_detector = GestureDetector
 
     def run(self):
         
@@ -92,20 +108,24 @@ class Run:
             _, frame = capture.read()
             frame = cv2.flip(frame, 1)
             frame = detector.fdHands(frame)
-            
+
+            currTime = time.time()
+            fps = 1 / (currTime-prevTime)
+            prevTime = currTime
+            fps_list.append(fps)
+                
             lmList = detector.fdPositions(frame)
             logging_list.append(lmList)
-            
+            print(lmList)
+            if self.gesture_detector.start_detection() == False:
+                logging_list = []
+
             if self.debug:
-                currTime = time.time()
-                fps = 1 / (currTime-prevTime)
-                prevTime = currTime
-                fps_list.append(fps)
-                
+               
                 cv2.putText(frame, str(int(fps)), (10, 70), cv2.FONT_HERSHEY_PLAIN, 3, (0,0,255), thickness=3)
                 cv2.imshow("Video", frame)
                 cv2.waitKey(1)
-
+'''
 class Runner:
 
     run_proc = None
@@ -127,7 +147,7 @@ class Runner:
             print(f"Terminating process resulted in error %s" % e)
 
         return False # Stops listener
-'''
+
 if __name__ == "__main__":
     arguments = get_arguments()
     Controller = ProcessController()
@@ -139,3 +159,7 @@ if __name__ == "__main__":
         process.start()
         process.join()
 '''
+if __name__ == "__main__":
+    arguments = get_arguments()
+    run = Run(arguments["debug"],arguments["camera_dir"],arguments["config_path"])
+    run.run()
