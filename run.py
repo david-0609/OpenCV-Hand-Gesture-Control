@@ -19,9 +19,6 @@ import cv2
 import time
 from pynput import keyboard
 import modules.HandDetector as HandDetector
-import modules.GestureLibs.GestureDetector as GestureDetector
-import modules.GestureLibs.GestureGenerator as GestureGenerator
-import modules.FingersGenerator as FingersGenerator
 
 '''
 TODO
@@ -44,14 +41,16 @@ def get_arguments():
         debug = True
     else:
         debug = False
-
-    camera_dir = os.environ["CAMERA_DIR"] 
-    if camera_dir == "":
+    
+    try: 
+        camera_dir = os.environ["CAMERA_DIR"] 
+    except KeyError:
         camera_dir = "/dev/video0"
         print("No camera directory specified, going with default /dev/video0")
-       
-    config_path = os.environ["CONFIG_PATH"]
-    if config_path == "":
+    
+    try:       
+        config_path = os.environ["CONFIG_PATH"]
+    except KeyError:
         config_path = ".config"
         print("config file not specified, defaulting to '.config'")
 
@@ -68,14 +67,15 @@ class Run:
         self.camera_dir = camera_dir
         self.config = config_path
  
-        global FingersGenerator
+        import modules.FingersGenerator as FingersGenerator
         FingersGenerator = FingersGenerator.FingersGenerator()
         self.FingersList = FingersGenerator.create_fingers()
-        global GestureGenerator
+    
+        import modules.GestureLibs.GestureGenerator as GestureGenerator
         GestureGenerator = GestureGenerator.GestureGenerator(self.config)
         self.GestureList = GestureGenerator.read_config()
-        global GestureDetector
-        
+
+        import modules.GestureLibs.GestureDetector as GestureDetector
         GestureDetector = GestureDetector.GestureDetector()
         GestureDetector.parse_fingertips()
 
@@ -84,28 +84,34 @@ class Run:
         global logging_list
         global fps_list
        
-        capture = cv2.VideoCapture(0)
+        capture = cv2.VideoCapture(self.camera_dir)
         detector = HandDetector.HandDetector()
         prevTime = 0
         currTime = 0
+        
+        try:
+
+            while True:
+                _, frame = capture.read()
+                frame = cv2.flip(frame, 1)
+                frame = detector.fdHands(frame)
                 
-        while True:
-            _, frame = capture.read()
-            frame = cv2.flip(frame, 1)
-            frame = detector.fdHands(frame)
-            
-            lmList = detector.fdPositions(frame)
-            logging_list.append(lmList)
-            
-            if self.debug:
-                currTime = time.time()
-                fps = 1 / (currTime-prevTime)
-                prevTime = currTime
-                fps_list.append(fps)
+                lmList = detector.fdPositions(frame)
+                logging_list.append(lmList)
                 
-                cv2.putText(frame, str(int(fps)), (10, 70), cv2.FONT_HERSHEY_PLAIN, 3, (0,0,255), thickness=3)
-                cv2.imshow("Video", frame)
-                cv2.waitKey(1)
+                if self.debug:
+                    currTime = time.time()
+                    fps = 1 / (currTime-prevTime)
+                    prevTime = currTime
+                    fps_list.append(fps)
+                    
+                    cv2.putText(frame, str(int(fps)), (10, 70), cv2.FONT_HERSHEY_PLAIN, 3, (0,0,255), thickness=3)
+                    cv2.imshow("Video", frame)
+                    cv2.waitKey(1)
+
+        except BaseException as e:
+            print(e)
+            print("Video ended")
 
 class ProcessController:
 

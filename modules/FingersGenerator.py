@@ -1,9 +1,9 @@
 import pickle
-from os.path import exists
+from pathlib import Path
 
 class FingersGenerator:
 
-    picklefile = r"../.pickled_fingerslist"
+    picklefile = r"pickled_fingerslist"
     
     def __init__(self) -> None:
         pass
@@ -12,8 +12,9 @@ class FingersGenerator:
         import Finger
         # The FingersList variable is stored in a pickle file as it is constant, there is no need to create the list
         # every time the program runs
-        
-        if not exists(self.picklefile):
+        path = Path(self.picklefile) 
+        print(path.is_file())
+        if not path.is_file():
 
             # Creates the fingers
             Thumb = Finger.Finger(name = "Thumb", finger_id=1, ids=[1,2,3,4])
