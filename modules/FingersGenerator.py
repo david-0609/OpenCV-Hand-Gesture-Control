@@ -3,7 +3,7 @@ from os.path import exists
 
 class FingersGenerator:
 
-    picklefile = r"../.pickled_fingerslist"
+    picklefile = ".pickled_fingerslist"
     
     def __init__(self) -> None:
         pass
@@ -26,7 +26,7 @@ class FingersGenerator:
             with open(self.picklefile, "wb") as file:
                 pickle.dump(FingerList, file) 
         else:
-            with open(self.picklefile, "r") as file:
+            with open(self.picklefile, "rb") as file:
                 FingerList = pickle.load(file)
 
         return FingerList
