@@ -112,7 +112,7 @@ class Run:
             lmList = detector.fdPositions(frame)
             print(lmList)
             if self.gesture_detector.start_detection(lmList) == False:
-                print("Detection not starting")
+                print("Gesture Detection not starting")
 
 if __name__ == "__main__":
     arguments = get_arguments()

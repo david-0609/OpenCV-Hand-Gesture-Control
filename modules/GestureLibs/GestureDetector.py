@@ -10,8 +10,6 @@ parentdir = os.path.dirname(currentdir)
 pparentdir = os.path.dirname(parentdir)
 sys.path.append(pparentdir)
 
-from run import Run
-
 @dataclass
 class FingerTips:
     
@@ -22,7 +20,7 @@ class FingerTips:
 
 class GestureDetector:
     detection_window = 3 
-    detection_wait = 1
+    detection_wait = 3
     
     FINGERTIPS = FingerTipList
   
@@ -32,6 +30,7 @@ class GestureDetector:
     end_time = None 
     detection_start = False 
     done = False
+    number_start = 0
 
     def __init__(self, FingersList, GestureList) -> None:
         self.FingersList = FingersList
@@ -43,14 +42,15 @@ class GestureDetector:
             self.FingerTipsData.append(FingerTips(id, [], [], ""))
     
     def reset(self):
+        print("resetting data")
         self.detection_start = False
         self.start_time = None
         self.end_time = None
         self.detection_frames = []
+        self.number_start = 0
         return False 
 
     def start_detection(self, input_list):
-        from run import lmList# imported on every call to have newest data
         
         if self.detection_start == False:
             fingers_up = []
@@ -72,16 +72,18 @@ class GestureDetector:
                 time.sleep(self.detection_wait) #sleeps 1 seconds for the user to change to the actual gesture
                 print(fingers_up)
 
-        if self.detection_start == True:
+        if self.detection_start == True and self.number_start == 0:
             print("Detection started")
             if self.start_time == None:
                 self.start_time = int(time.time())
             if self.end_time == None:
                 self.end_time = time.time()+self.detection_window
-
+            self.number_start = 1
+            
+        if self.detection_start == True and self.number_start == 1:
             now = int(time.time()) 
             if now <= self.end_time:
-               self.detection_frames.append(lmList) 
+               self.detection_frames.append(input_list) 
             elif now >= self.end_time:
                 self.parse_list(self.detection_frames) 
                 return self.reset()
