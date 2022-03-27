@@ -1,5 +1,4 @@
 import Tools
-from run import logging_list
 
 FingerTipList = []
 
@@ -12,32 +11,43 @@ class Finger():
         self.tip = ids[0]
         self.finger_id = finger_id
 
-    @property
     def is_up(self):
+        from run import lmList
         ylist = []
         cleaned_list = []
         
-        cleaned_list = Tools.select_coords(self.ids, logging_list)
+        cleaned_list = Tools.select_coords(self.ids, lmList)
         cleaned_list.sort(key = lambda x:x[0])
-        print(cleaned_list)
         
         # If the finger is up, the y should be in a ascending order, which is sorted
         for pt in cleaned_list:
             ylist.append(pt[2])
             
-        #print(ylist)
+        print(ylist)
 
-        flag = 0
-        if (all(ylist[i] <= ylist[i + 1] for i in range(len(ylist)-1))):
-            flag = 1
-            
-        if flag == 1:
-            return False
-        else:
+        index = 0
+        TrueList = []
+        for _ in ylist:
+            try:
+                if ylist[index] > ylist[index+1]:
+                    TrueList.append(True)
+                    index += 1
+            except IndexError:
+                break
+
+        true_number = 0
+        TrueListLength = len(TrueList)
+        for i in TrueList:
+            if i:
+                true_number += 1
+        if true_number-1 or true_number == TrueListLength:
             return True
-                
+        else:
+            return False
+                          
     @property
     def tip_coord(self):
-        tip_coord = Tools.select_coords(self.tip, logging_list)
+        from run import lmList
+        tip_coord = Tools.select_coords(self.tip, lmList)
         return tip_coord
 

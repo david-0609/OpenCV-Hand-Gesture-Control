@@ -3,6 +3,7 @@ arguments = {}
 
 # This will contain all the coordinates from the frames
 logging_list = []
+lmList = []
 # Other files will import this from run, not from FingersGenerator
 processes = []
 
@@ -84,7 +85,8 @@ class Run:
     def run(self):
         
         global logging_list
-       
+        global lmList
+
         capture = cv2.VideoCapture(self.camera_dir)
         detector = HandDetector.HandDetector()
         prevTime = 0

@@ -2,7 +2,6 @@ from dataclasses import dataclass
 import time
 import sys
 import os
-import warnings
 from modules.Exceptions import DirectionNotDetermined, GestureNotDetermined
 from Finger import FingerTipList
 from Tools import findMajority, is_identical, convert_dir_id
@@ -23,6 +22,7 @@ class FingerTips:
 
 class GestureDetector:
     detection_window = 3 
+    detection_wait = 1
     FingersList = Run.FingersList
     GestureList = Run.GestureList
      
@@ -57,12 +57,12 @@ class GestureDetector:
 
             fingers_up = []
             for finger in self.FingersList:
-                if finger.is_up == True:
-                    fingers_up.append(finger.is_up)
+                if finger.is_up() == True:
+                    fingers_up.append(finger.is_up())
                     if len(fingers_up) == 5:
-                        print("Starting detection")
+                        print(f"Starting detection after {self.detection_wait} second")
                         self.detection_start = True
-                        time.sleep(0.5) #sleeps 0.5 seconds for the user to change to the actual gesture
+                        time.sleep(self.detection_wait) #sleeps 1 seconds for the user to change to the actual gesture
             return True
 
         elif self.detection_start == True:
@@ -86,7 +86,7 @@ class GestureDetector:
                 if coord[0] == tip.id:
                     tip.x_coord.append(coord[1])
                     tip.y_coord.append(coord[2])
-        
+        print(self.FingerTipsData) 
         self.detection_frames = []  # Clears list after finish using it 
 
     def identify_dir(self):

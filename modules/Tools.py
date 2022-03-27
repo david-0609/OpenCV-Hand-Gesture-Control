@@ -4,9 +4,9 @@ def all_equal(iterable):
     g = groupby(iterable)
     return next(g, True) and not next(g, False)
 
-def select_coords(ids, list):
+def select_coords(ids, in_list):
     cleaned_list = []
-    orig_list = list[-1]
+    orig_list = in_list[-1]
     for coord in orig_list:
         for id in ids:
             if coord[0] == id:
