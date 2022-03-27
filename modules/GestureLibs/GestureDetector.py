@@ -50,7 +50,7 @@ class GestureDetector:
 
     def start_detection(self, input_list):
         print("Called") 
-        from run import logging_list # imported on every call to have newest data
+        from run import lmList# imported on every call to have newest data
         
         if self.detection_start == False:
             print("Now here")
@@ -58,7 +58,6 @@ class GestureDetector:
             print(self.FingersList)
             for finger in self.FingersList:
                 print("Checking")
-            
                 finger_is_up = finger.is_up(input_list) 
                 if finger_is_up == True:
                     print("Up")
@@ -68,19 +67,22 @@ class GestureDetector:
                     break
                 elif finger_is_up == False:
                     print("not up")
-                    if len(fingers_up) == 5:
-                        print(f"Starting detection after {self.detection_wait} second")
-                        self.detection_start = True
-                        time.sleep(self.detection_wait) #sleeps 1 seconds for the user to change to the actual gesture
 
-        elif self.detection_start == True:
+            if len(fingers_up) == 5:
+                print(f"Starting detection after {self.detection_wait} second")
+                self.detection_start = True
+                time.sleep(self.detection_wait) #sleeps 1 seconds for the user to change to the actual gesture
+                print(fingers_up)
+
+        if self.detection_start == True:
+            print("Detection started")
             if self.start_time == None:
                 self.start_time = int(time.time())
             if self.end_time == None:
                 self.end_time = time.time()+self.detection_window
             now = int(time.time()) 
             if now <= self.end_time:
-               self.detection_frames.append(logging_list[-1]) 
+               self.detection_frames.append(lmList) 
             elif now >= self.end_time:
                 self.parse_list(self.detection_frames) 
                 return self.reset()
