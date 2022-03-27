@@ -38,6 +38,7 @@ class GestureDetector:
         self.GestureList = GestureList
 
     def parse_fingertips(self):
+        self.FingerTipsData = []
         for id in self.FINGERTIPS:
             self.FingerTipsData.append(FingerTips(id, [], [], ""))
     
@@ -49,15 +50,12 @@ class GestureDetector:
         return False 
 
     def start_detection(self, input_list):
-        print("Called") 
         from run import lmList# imported on every call to have newest data
         
         if self.detection_start == False:
-            print("Now here")
             fingers_up = []
             print(self.FingersList)
             for finger in self.FingersList:
-                print("Checking")
                 finger_is_up = finger.is_up(input_list) 
                 if finger_is_up == True:
                     print("Up")
@@ -80,6 +78,7 @@ class GestureDetector:
                 self.start_time = int(time.time())
             if self.end_time == None:
                 self.end_time = time.time()+self.detection_window
+
             now = int(time.time()) 
             if now <= self.end_time:
                self.detection_frames.append(lmList) 
@@ -98,13 +97,14 @@ class GestureDetector:
                     tip.y_coord.append(coord[2])
         print(self.FingerTipsData) 
         self.detection_frames = []  # Clears list after finish using it 
+        self.identify_dir()
 
     def identify_dir(self):
         '''
         This function identifies the direction of travel of the finger through using 3 points of the fingertip's travel
         Should be mostly accurate
         '''
-        for fingertip in FingerTipList:
+        for fingertip in self.FingerTipsData:
             first_x = fingertip.x_coord[0]
             middle_x = fingertip.x_coord[int(len(fingertip.x_coord)/2)]
             final_x = fingertip.x_coord[-1]
@@ -130,6 +130,9 @@ class GestureDetector:
                     fingertip.direction = "u"
                 elif first_y < middle_y < final_y:
                     fingertip.direction = "d"
+        self.parse_fingertips()
+        print("Gesture Direction Done")
+        self.match_gesture()
         
     def match_gesture(self):
         # Match previous information to a gesture
