@@ -71,16 +71,20 @@ class Run:
         import modules.FingersGenerator as FingersGenerator
         FingersGenerator = FingersGenerator.FingersGenerator()
         self.FingersList = FingersGenerator.create_fingers()
-    
+   
         import modules.GestureLibs.GestureGenerator as GestureGenerator
         GestureGenerator = GestureGenerator.GestureGenerator(self.config_path)
         self.GestureList = GestureGenerator.read_config()
 
         import modules.GestureLibs.GestureDetector as GestureDetector
-
-        GestureDetector = GestureDetector.GestureDetector()
+        GestureDetector = GestureDetector.GestureDetector(FingersList=self.FingersList, GestureList=self.GestureList)
         GestureDetector.parse_fingertips()
         self.gesture_detector = GestureDetector
+
+        if self.debug:
+            print(self.FingersList)
+            print(self.GestureList)
+            print(self.gesture_detector)
 
     def run(self):
         
@@ -110,7 +114,7 @@ class Run:
             lmList = detector.fdPositions(frame)
             logging_list.append(lmList)
             print(lmList)
-            if self.gesture_detector.start_detection() == False:
+            if self.gesture_detector.start_detection(lmList) == False:
                 logging_list = []
 
 if __name__ == "__main__":

@@ -23,9 +23,7 @@ class FingerTips:
 class GestureDetector:
     detection_window = 3 
     detection_wait = 1
-    FingersList = Run.FingersList
-    GestureList = Run.GestureList
-     
+    
     FINGERTIPS = FingerTipList
   
     FingerTipsData = []
@@ -35,8 +33,9 @@ class GestureDetector:
     detection_start = False 
     done = False
 
-    def __init__(self) -> None:
-        pass
+    def __init__(self, FingersList, GestureList) -> None:
+        self.FingersList = FingersList
+        self.GestureList = GestureList
 
     def parse_fingertips(self):
         for id in self.FINGERTIPS:
@@ -49,21 +48,30 @@ class GestureDetector:
         self.detection_frames = []
         return False 
 
-    def start_detection(self):
-        
+    def start_detection(self, input_list):
+        print("Called") 
         from run import logging_list # imported on every call to have newest data
         
         if self.detection_start == False:
-
+            print("Now here")
             fingers_up = []
+            print(self.FingersList)
             for finger in self.FingersList:
-                if finger.is_up() == True:
-                    fingers_up.append(finger.is_up())
+                print("Checking")
+            
+                finger_is_up = finger.is_up(input_list) 
+                if finger_is_up == True:
+                    print("Up")
+                    fingers_up.append(True)
+                elif finger_is_up == 0:
+                    print("Error in finger detection")
+                    break
+                elif finger_is_up == False:
+                    print("not up")
                     if len(fingers_up) == 5:
                         print(f"Starting detection after {self.detection_wait} second")
                         self.detection_start = True
                         time.sleep(self.detection_wait) #sleeps 1 seconds for the user to change to the actual gesture
-            return True
 
         elif self.detection_start == True:
             if self.start_time == None:

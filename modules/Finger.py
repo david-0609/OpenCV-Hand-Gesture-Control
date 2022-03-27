@@ -11,40 +11,43 @@ class Finger():
         self.tip = ids[0]
         self.finger_id = finger_id
 
-    def is_up(self):
-        from run import lmList
+    def is_up(self, in_list):
         ylist = []
         cleaned_list = []
         
-        cleaned_list = Tools.select_coords(self.ids, lmList)
-        cleaned_list.sort(key = lambda x:x[0])
+        cleaned_list = Tools.select_coords(self.ids, in_list)
+        if cleaned_list != False:
+
+            cleaned_list.sort(key = lambda x:x[0])
         
-        # If the finger is up, the y should be in a ascending order, which is sorted
-        for pt in cleaned_list:
-            ylist.append(pt[2])
-            
-        print(ylist)
+            # If the finger is up, the y should be in a ascending order, which is sorted
+            for pt in cleaned_list:
+                ylist.append(pt[2])
+                    
+            print(ylist)
 
-        index = 0
-        TrueList = []
-        for _ in ylist:
-            try:
-                if ylist[index] > ylist[index+1]:
-                    TrueList.append(True)
-                    index += 1
-            except IndexError:
-                break
+            index = 0
+            TrueList = []
+            for _ in ylist:
+                try:
+                    if ylist[index] > ylist[index+1]:
+                        TrueList.append(True)
+                        index += 1
+                except IndexError:
+                    break
 
-        true_number = 0
-        TrueListLength = len(TrueList)
-        for i in TrueList:
-            if i:
-                true_number += 1
-        if true_number-1 or true_number == TrueListLength:
-            return True
-        else:
-            return False
-                          
+            true_number = 0
+            TrueListLength = len(TrueList)
+            for i in TrueList:
+                if i:
+                    true_number += 1
+            if true_number-1 or true_number == TrueListLength:
+                return True
+            else:
+                return False
+        elif cleaned_list == False:
+            return 0 
+
     @property
     def tip_coord(self):
         from run import lmList
