@@ -31,6 +31,9 @@ class GestureDetector:
     detection_start = False 
     done = False
     number_start = 0
+    in_cooldown = False
+    cooldown_time = 5
+    cooldown_end = None
 
     def __init__(self, FingersList, GestureList) -> None:
         self.FingersList = FingersList
@@ -51,8 +54,12 @@ class GestureDetector:
         return False 
 
     def start_detection(self, input_list):
-        
-        if self.detection_start == False:
+        if self.in_cooldown: 
+            print(f"In cooldown, cooldown ends in {}",int(self.cooldown_end-time.time()))
+        if int(time.time()) > self.cooldown_end:
+            self.in_cooldown = False
+
+        if self.detection_start == False and self.in_cooldown == False:
             fingers_up = []
             print(self.FingersList)
             for finger in self.FingersList:
@@ -86,6 +93,8 @@ class GestureDetector:
                self.detection_frames.append(input_list) 
             elif now >= self.end_time:
                 self.parse_list(self.detection_frames) 
+                self.in_cooldown = True
+                self.cooldown_end = now+5
                 return self.reset()
 
     def parse_list(self, frames):
@@ -110,12 +119,12 @@ class GestureDetector:
             first_x = fingertip.x_coord[0]
             middle_x = fingertip.x_coord[int(len(fingertip.x_coord)/2)]
             final_x = fingertip.x_coord[-1]
-            diff_x = final_x - first_x
+            diff_x = abs(final_x - first_x)
             
             first_y = fingertip.y_coord[0]
             middle_y = fingertip.y_coord[int(len(fingertip.y_coord)/2)]
             final_y = fingertip.y_coord[-1]
-            diff_y = final_y-first_y
+            diff_y = abs(final_y-first_y)
             
             if diff_x > diff_y:
                 # goes left/right
