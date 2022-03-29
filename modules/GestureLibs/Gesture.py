@@ -35,7 +35,7 @@ KEYPRESSLIST = ['\t', '\n', '\r', ' ', '!', '"', '#', '$', '%', '&', "'", '(',
 class Gesture():
 
     
-    def __init__(self, name: str, action: list, fingers_up: list, direction: str) -> None:
+    def __init__(self, name: str, action: list, fingers_up: int, direction: str) -> None:
         self.name = name
         self.action = action
         self.fingers_up = fingers_up

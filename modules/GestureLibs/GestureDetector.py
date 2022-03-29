@@ -54,16 +54,17 @@ class GestureDetector:
         return False 
 
     def start_detection(self, input_list):
-        if self.in_cooldown: 
-            print(f"In cooldown, cooldown ends in {}",int(self.cooldown_end-time.time()))
-        if int(time.time()) > self.cooldown_end:
-            self.in_cooldown = False
+        if self.in_cooldown and self.cooldown_end != None: 
+            print(f"In cooldown, cooldown ends in {0}",int(self.cooldown_end-time.time()))
+            if int(time.time()) > self.cooldown_end:
+                self.in_cooldown = False
 
         if self.detection_start == False and self.in_cooldown == False:
             fingers_up = []
             print(self.FingersList)
             for finger in self.FingersList:
                 finger_is_up = finger.is_up(input_list) 
+                
                 if finger_is_up == True:
                     print("Up")
                     fingers_up.append(True)
@@ -87,7 +88,7 @@ class GestureDetector:
                 self.end_time = time.time()+self.detection_window
             self.number_start = 1
             
-        if self.detection_start == True and self.number_start == 1:
+        if self.detection_start == True and self.number_start == 1 and self.end_time != None:
             now = int(time.time()) 
             if now <= self.end_time:
                self.detection_frames.append(input_list) 
@@ -147,20 +148,19 @@ class GestureDetector:
         
     def match_gesture(self):
         # Match previous information to a gesture
-        UpIDList = []
-        UpList = []
         DirectionsList = []
+        number_fingers_up = int() 
         GestureDirection = ""
-
-        for finger in self.FingersList:
-            if finger.is_up:
-                UpIDList.append(finger.tip)
-                UpList.append(finger)
-
+        """
+        Plan for rewrite
+        """
         for fingertip in self.FingerTipsData:
-            if fingertip.id in UpIDList:
-                DirectionsList.append(fingertip.direction)
-        
+            DirectionsList.append(fingertip.direction)
+
+        for finger in self.FingerTipsData:
+            if finger.is_up:
+                number_fingers_up += 1
+
         # To find the majority of the directions of fingers, the fingers direction have to be mapped to an integer value 
         DirectionsList = convert_dir_id(DirectionsList)
         GestureDirection = findMajority(DirectionsList)
@@ -168,7 +168,7 @@ class GestureDetector:
         try:
             for gesture in self.GestureList:
                 # Now matches gesture with the GestureList that was imported from main
-                if GestureDirection == gesture.direction and is_identical(UpList, gesture.fingers_up):
+                if GestureDirection == gesture.direction and number_fingers_up == gesture.fingers_up:
                     gesture.exec_action()
 
                 else:

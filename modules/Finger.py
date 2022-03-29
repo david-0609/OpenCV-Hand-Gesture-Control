@@ -16,6 +16,7 @@ class Finger():
         cleaned_list = []
         
         cleaned_list = Tools.select_coords(self.ids, in_list)
+
         if cleaned_list != False:
 
             cleaned_list.sort(key = lambda x:x[0])
@@ -41,7 +42,7 @@ class Finger():
             for i in TrueList:
                 if i:
                     true_number += 1
-            if true_number-1 or true_number == TrueListLength:
+            if true_number-1 == TrueListLength or true_number == TrueListLength:
                 return True
             else:
                 return False
