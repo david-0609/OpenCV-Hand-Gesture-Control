@@ -21,7 +21,7 @@ class GestureDetector:
     detection_window = 3 
     detection_wait = 3
     FingerTipsData = [] 
-    number_up = None
+    number_up = [] 
     detection_frames = []
     start_time = None 
     end_time = None 
@@ -90,18 +90,18 @@ class GestureDetector:
             
         if self.detection_start == True and self.number_start == 1 and self.end_time != None:
             now = int(time.time()) 
-            up_list = []
             if now <= self.end_time:
+                up_list = []
                 for finger in self.FingersList:
                     finger_tip = finger.tip
                     fingertip_coord = finger.tip_coord(finger_tip, input_list)
                     print("fingertip_coord", fingertip_coord)
-                    self.detection_frames.append(fingertip_coord) 
                     up_list.append(finger.is_up(input_list))
+                    self.detection_frames.append(fingertip_coord) 
                 for i in up_list:
                     if not i:
                         up_list.remove(i)
-                self.number_up = len(up_list) 
+                self.number_up.append(len(up_list)) 
             elif now >= self.end_time:
                 self.in_cooldown = True
                 self.cooldown_end = now+5
@@ -173,13 +173,13 @@ class GestureDetector:
         # To find the majority of the directions of fingers, the fingers direction have to be mapped to an integer value 
         DirectionsList = convert_dir_id(DirectionsList)
         GestureDirection = findMajority(DirectionsList)
+        self.number_up = findMajority(self.number_up)
         GestureDirection = convert_dir_id(GestureDirection) 
         print(GestureDirection)
         print(self.number_up)
         print(len(self.GestureList))
         dev_1plus = self.number_up + 1
         dev_1minus = self.number_up - 1
-
         for gesture in self.GestureList:
             print(gesture.direction, gesture.fingers_up, type(gesture.fingers_up))
             # Now matches gesture with the GestureList that was imported from main
@@ -193,4 +193,5 @@ class GestureDetector:
                 print("No Gesture Detected") 
 
         self.FingerTipsData = []
+        self.number_up = []
         self.create_fingertips() # Clears FingerTipsData and recreates empty template
