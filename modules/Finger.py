@@ -17,7 +17,7 @@ class Finger():
         
         cleaned_list = Tools.select_coords(self.ids, in_list)
 
-        if cleaned_list != False:
+        if cleaned_list != False and cleaned_list != None:
 
             cleaned_list.sort(key = lambda x:x[0])
         
@@ -26,32 +26,16 @@ class Finger():
                 ylist.append(pt[2])
                     
             print(ylist)
-
-            index = 0
-            TrueList = []
-            for _ in ylist:
-                try:
-                    if ylist[index] > ylist[index+1]:
-                        TrueList.append(True)
-                        index += 1
-                except IndexError:
-                    break
-
-            true_number = 0
-            TrueListLength = len(TrueList)
-            for i in TrueList:
-                if i:
-                    true_number += 1
-            if true_number-1 == TrueListLength or true_number == TrueListLength:
+            ylist_copy = ylist.copy()
+            ylist.sort(reverse=True)
+            if ylist == ylist_copy:
+                print("Is up")
                 return True
             else:
+                print("not up")
                 return False
-        elif cleaned_list == False:
-            return 0 
-
-    @property
-    def tip_coord(self):
-        from run import lmList
-        tip_coord = Tools.select_coords(self.tip, lmList)
+        
+    def tip_coord(self, ids, in_list):
+        tip_coord = Tools.select_coords(ids, in_list)
         return tip_coord
 

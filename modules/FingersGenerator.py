@@ -32,11 +32,3 @@ class FingersGenerator:
 
         return FingerList
 
-    def create_fingertip_list(self):
-        from Finger import FingerTipList
-
-        for finger in FingerTipList:
-        
-            FingerTipList.append(finger.tip)
-            return FingerTipList
-

@@ -74,12 +74,18 @@ class Run:
         import modules.GestureLibs.GestureGenerator as GestureGenerator
         GestureGenerator = GestureGenerator.GestureGenerator(self.config_path)
         self.GestureList = GestureGenerator.read_config()
-
+        
+        FingerTipList = []
+        for finger in self.FingersList:
+            FingerTipList.append(finger.tip) 
+      
         import modules.GestureLibs.GestureDetector as GestureDetector
-        GestureDetector = GestureDetector.GestureDetector(FingersList=self.FingersList, GestureList=self.GestureList)
-        GestureDetector.parse_fingertips()
+        GestureDetector = GestureDetector.GestureDetector(FingersList=self.FingersList, 
+                                                          GestureList=self.GestureList,
+                                                          FingerTipList = FingerTipList)
         self.gesture_detector = GestureDetector
-
+        self.gesture_detector.create_fingertips()
+       
         if self.debug:
             print(self.FingersList)
             print(self.GestureList)
@@ -88,7 +94,6 @@ class Run:
     def run(self):
         
         global lmList
-
         capture = cv2.VideoCapture(self.camera_dir)
         detector = HandDetector.HandDetector()
         prevTime = 0

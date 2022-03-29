@@ -4,21 +4,28 @@ def all_equal(iterable):
     g = groupby(iterable)
     return next(g, True) and not next(g, False)
 
-def select_coords(ids, in_list):
-    cleaned_list = []
-    try:
+def select_coords(hand_id, in_list):
+    if type(hand_id) == list:
+        cleaned_list = []
+        try:
+            for coord in in_list:
+                print(coord)
+                for id in hand_id:
+                    if coord[0] == id:
+                        cleaned_list.append(coord)
+        except IndexError:
+            pass
+        
+        if cleaned_list != []:
+            return cleaned_list
+        else:
+            return False
+
+    if type(hand_id)== int:
         for coord in in_list:
-            print(coord)
-            for id in ids:
-                if coord[0] == id:
-                    cleaned_list.append(coord)
-    except IndexError:
-        pass
-    
-    if cleaned_list != []:
-        return cleaned_list
-    else:
-        return False
+            id = coord[0]
+            if id == hand_id:
+                return coord
 
 def findMajority(arr):
     majority = None

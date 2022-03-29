@@ -1,30 +1,27 @@
-from dataclasses import dataclass
 import time
 import sys
 import os
-from modules.Exceptions import DirectionNotDetermined, GestureNotDetermined
-from Finger import FingerTipList
-from Tools import findMajority, is_identical, convert_dir_id
+import pyautogui
+from modules.Exceptions import GestureNotDetermined
+from Tools import findMajority, convert_dir_id
 currentdir = os.path.dirname(os.path.realpath(__file__))
 parentdir = os.path.dirname(currentdir)
 pparentdir = os.path.dirname(parentdir)
 sys.path.append(pparentdir)
 
-@dataclass
 class FingerTips:
-    
-    id: int
-    x_coord: list
-    y_coord: list
-    direction: str
+
+    def __init__(self, id: int, x_coord: list, y_coord: list, direction: str):
+        self.id = id
+        self.x_coord = x_coord
+        self.y_coord = y_coord
+        self.direction = direction
 
 class GestureDetector:
     detection_window = 3 
     detection_wait = 3
-    
-    FINGERTIPS = FingerTipList
-  
-    FingerTipsData = []
+    FingerTipsData = [] 
+    number_up = None
     detection_frames = []
     start_time = None 
     end_time = None 
@@ -35,21 +32,23 @@ class GestureDetector:
     cooldown_time = 5
     cooldown_end = None
 
-    def __init__(self, FingersList, GestureList) -> None:
+    def __init__(self, FingersList, GestureList, FingerTipList) -> None:
+        self.FingerTipList = FingerTipList
         self.FingersList = FingersList
         self.GestureList = GestureList
 
-    def parse_fingertips(self):
-        self.FingerTipsData = []
-        for id in self.FINGERTIPS:
-            self.FingerTipsData.append(FingerTips(id, [], [], ""))
-    
+    def create_fingertips(self):
+        print(self.FingerTipList)
+        for id in self.FingerTipList:
+            p = FingerTips(id, x_coord=[], y_coord=[], direction="")
+            self.FingerTipsData.append(p)
+        print("Initial data,",self.FingerTipsData)
+
     def reset(self):
         print("resetting data")
         self.detection_start = False
         self.start_time = None
         self.end_time = None
-        self.detection_frames = []
         self.number_start = 0
         return False 
 
@@ -64,6 +63,7 @@ class GestureDetector:
             print(self.FingersList)
             for finger in self.FingersList:
                 finger_is_up = finger.is_up(input_list) 
+                print(finger_is_up)
                 
                 if finger_is_up == True:
                     print("Up")
@@ -77,7 +77,7 @@ class GestureDetector:
             if len(fingers_up) == 5:
                 print(f"Starting detection after {self.detection_wait} second")
                 self.detection_start = True
-                time.sleep(self.detection_wait) #sleeps 1 seconds for the user to change to the actual gesture
+                time.sleep(self.detection_wait) #sleeps 3 seconds for the user to change to the actual gesture
                 print(fingers_up)
 
         if self.detection_start == True and self.number_start == 0:
@@ -90,24 +90,38 @@ class GestureDetector:
             
         if self.detection_start == True and self.number_start == 1 and self.end_time != None:
             now = int(time.time()) 
+            up_list = []
             if now <= self.end_time:
-               self.detection_frames.append(input_list) 
+                for finger in self.FingersList:
+                    finger_tip = finger.tip
+                    fingertip_coord = finger.tip_coord(finger_tip, input_list)
+                    print("fingertip_coord", fingertip_coord)
+                    self.detection_frames.append(fingertip_coord) 
+                    up_list.append(finger.is_up(input_list))
+                for i in up_list:
+                    if not i:
+                        up_list.remove(i)
+                self.number_up = len(up_list) 
             elif now >= self.end_time:
-                self.parse_list(self.detection_frames) 
                 self.in_cooldown = True
                 self.cooldown_end = now+5
-                return self.reset()
+                return_value = self.reset()
+                self.parse_list()
+                return return_value
 
-    def parse_list(self, frames):
+    def parse_list(self):
         '''
         converts the detection_frames list to dataclass for easier processing
         '''
-        for coord in frames:
-            for tip in self.FingerTipsData:
+        print("detection_frames", self.detection_frames)
+        for tip in self.FingerTipsData:
+            tip.x_coord = []
+            tip.y_coord = []
+            for coord in self.detection_frames:
                 if coord[0] == tip.id:
                     tip.x_coord.append(coord[1])
                     tip.y_coord.append(coord[2])
-        print(self.FingerTipsData) 
+        print("fingertipsdata: ", self.FingerTipsData) 
         self.detection_frames = []  # Clears list after finish using it 
         self.identify_dir()
 
@@ -118,64 +132,65 @@ class GestureDetector:
         '''
         for fingertip in self.FingerTipsData:
             first_x = fingertip.x_coord[0]
-            middle_x = fingertip.x_coord[int(len(fingertip.x_coord)/2)]
             final_x = fingertip.x_coord[-1]
             diff_x = abs(final_x - first_x)
+            print(diff_x)
             
             first_y = fingertip.y_coord[0]
-            middle_y = fingertip.y_coord[int(len(fingertip.y_coord)/2)]
             final_y = fingertip.y_coord[-1]
             diff_y = abs(final_y-first_y)
-            
+            print(diff_y)
+
             if diff_x > diff_y:
+                print(first_x, final_x)
                 # goes left/right
-                if first_x < middle_x < final_x:
+                if first_x < final_x:
                     fingertip.direction = "r" # R for right
-                elif first_x > middle_x > final_x:
+                elif first_x > final_x:
                     fingertip.direction = "l" # L for left
-                else:
-                    raise DirectionNotDetermined
                 
-            if diff_y > diff_x:
+            elif diff_y > diff_x:
                 #goes up/down      
-                if first_y < middle_y < final_y:
+                if first_y < final_y:
                     fingertip.direction = "u"
-                elif first_y < middle_y < final_y:
+                elif first_y < final_y:
                     fingertip.direction = "d"
-        self.parse_fingertips()
+            print("direction", fingertip.direction)
+
         print("Gesture Direction Done")
         self.match_gesture()
         
     def match_gesture(self):
         # Match previous information to a gesture
         DirectionsList = []
-        number_fingers_up = int() 
         GestureDirection = ""
-        """
-        Plan for rewrite
-        """
+
         for fingertip in self.FingerTipsData:
             DirectionsList.append(fingertip.direction)
 
-        for finger in self.FingerTipsData:
-            if finger.is_up:
-                number_fingers_up += 1
+        print(DirectionsList)
 
         # To find the majority of the directions of fingers, the fingers direction have to be mapped to an integer value 
         DirectionsList = convert_dir_id(DirectionsList)
         GestureDirection = findMajority(DirectionsList)
         GestureDirection = convert_dir_id(GestureDirection) 
-        try:
-            for gesture in self.GestureList:
-                # Now matches gesture with the GestureList that was imported from main
-                if GestureDirection == gesture.direction and number_fingers_up == gesture.fingers_up:
+        print(GestureDirection)
+        print(self.number_up)
+        print(len(self.GestureList))
+        dev_1plus = self.number_up + 1
+        dev_1minus = self.number_up - 1
+
+        for gesture in self.GestureList:
+            print(gesture.direction, gesture.fingers_up, type(gesture.fingers_up))
+            # Now matches gesture with the GestureList that was imported from main
+            if GestureDirection == gesture.direction :
+                if self.number_up == gesture.fingers_up or dev_1minus == gesture.fingers_up or dev_1plus == gesture.fingers_up:
+                    pyautogui.alert('A gesture is detected', "Success")
                     gesture.exec_action()
+                    print("Gesture Detected")
 
-                else:
-                    raise GestureNotDetermined  
-        except BaseException as e:
-            print(e)
+            else:
+                print("No Gesture Detected") 
 
-        finally:
-            self.FingerTipsData = []
-            self.parse_fingertips() # Clears FingerTipsData and recreates empty template
+        self.FingerTipsData = []
+        self.create_fingertips() # Clears FingerTipsData and recreates empty template
