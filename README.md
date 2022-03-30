@@ -11,11 +11,17 @@ This program reads in coordinates of finger landmarks (see landmarks.png) and us
 ## Current state of completion
 The project works most of the time, however, due to the impercise data from of the hand detection algorithm and lack of fine tuning, it is currently not guranteed to be always accurate in detecting hand gestures effectively. If the input is perfect, the code would able to reliably recognise the gesture and execute actions based on the detection results. 
 
-## Dependencies
+## Dependencies 
 
-- Python 3.7, other versions of Python may not be compatible with the libraries
-- X11 GUI (Needed for pynput module) 
+- Python 3.7, other versions of Python may not be compatible with the libraries, as of now, newer python versions (>=3.7) can be used but not tested
+- X11 (Needed for pynput and pyautogui module), Wayland currently not tested
 - Numpy, OpenCV, mediapipe etc (see requirements.txt)
+- Works on any modern GNU/Linux distro, Windows and Mac not tested
+
+## Hardware Requirements
+
+- Webcam (Recommended minimum 720p 30fps) and good lighting conditions
+- At least 200-300 MB of free RAM
 
 ## Installation
 
@@ -34,7 +40,7 @@ Algorithm to use: https://google.github.io/mediapipe/solutions/hands.html
 The mediapipe module will grab the coordinates of the points on the hand, and these points will be used to determine if a finger is being held up or not. Motion tracking will be done with numpy and matplotlib by logging the coordinate changes of the fingertips inside a detection window that is triggered by counting the number of fingers up.
 OOP will be used for extendiblity in the future and ease of access with a front end TUI/GUI application.  
 
-A detection window will be started as soon as all 5 fingers are found on screen, the default value is 5 seconds. Frames in the future 5 seconds will be monitored and after the finger is out of the camera or the window is over, an action will be performed through keyboard shortcut based on the results of monitoring. The x and y coordinates will be monitored and determined similiarly to the finger_up function.
+A detection window will be started as soon as all 5 fingers are found on screen, the default value is 3 seconds. Frames in the future 3 seconds will be monitored and after the finger is out of the camera or the window is over, an action will be performed through keyboard shortcut based on the results of monitoring. The x and y coordinates will be monitored and determined similiarly to the finger_up function.
 
 ## Screenshots
 
@@ -42,7 +48,7 @@ A detection window will be started as soon as all 5 fingers are found on screen,
 
 Running with debug without specifying config file (defaults to `.config` in home directory)
 
-`python run.py --debug=true "`
+`python run.py --debug=true`
 
 Running without debug
 
