@@ -144,19 +144,23 @@ class GestureDetector:
             first_y = fingertip.y_coord[0]
             final_y = fingertip.y_coord[-1]
             diff_y = abs(final_y-first_y)
-
+            print(diff_x, diff_y)
             if diff_x > diff_y:
                 # goes left/right
                 if first_x < final_x:
+                    print("right")
                     fingertip.direction = "r" # R for right
                 elif first_x > final_x:
+                    print("left")
                     fingertip.direction = "l" # L for left
                 
             elif diff_y > diff_x:
                 #goes up/down      
                 if first_y < final_y:
+                    print("up")
                     fingertip.direction = "u"
                 elif first_y < final_y:
+                    print("Down")
                     fingertip.direction = "d"
 
         print("Gesture Direction Done")
@@ -173,17 +177,20 @@ class GestureDetector:
 
         # To find the majority of the directions of fingers, the fingers direction have to be mapped to an integer value 
         DirectionsList = convert_dir_id(DirectionsList)
-        GestureDirection = findMajority(DirectionsList)
+        GestureDirection = findMajority(DirectionsList) # Finds most common value
         self.number_up = findMajority(self.number_up)
         GestureDirection = convert_dir_id(GestureDirection) 
         # Allows the number of fingers detected to be one more or one less to compensate for error
-        dev_1plus = self.number_up + 1
-        dev_1minus = self.number_up - 1
+        try:
+            dev_1plus = self.number_up + 1
+            dev_1minus = self.number_up - 1
+        except TypeError:
+            print("Error in Gesture Detection")
         for gesture in self.GestureList:
             # Now matches gesture with the GestureList that was imported from main
             if GestureDirection == gesture.direction:
                 if self.number_up == gesture.fingers_up or dev_1minus == gesture.fingers_up or dev_1plus == gesture.fingers_up:
-                    pyautogui.alert('A gesture is detected', "Success")
+                    pyautogui.alert('A gesture is detected, Gesture name: '+gesture.name, title="Success")
                     gesture.exec_action()
                     print("Gesture Detected")
 
