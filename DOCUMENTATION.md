@@ -24,3 +24,10 @@ The design pattern used for this project is Facade. I used this to abstract the 
 
 ## Default settings:
 - The detection window is 3 seconds, can be changed in the start_detection function in file GestureDetector.py 
+
+## Configuration
+
+The tool for reading the config file is configparser, a python library. The syntax of configs can be seen in the example file.
+Syntax of config is very straightforwards and easy to use. 
+Note that for every gesture, a new section name (name in `[]`) should be created. All options are required to be filled out or an error would be thrown when executing the gesture. 
+For more information refer to [configparser's documentation page](https://docs.python.org/3/library/configparser.html)
