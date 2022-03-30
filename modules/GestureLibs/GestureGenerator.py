@@ -11,7 +11,6 @@ class GestureGenerator:
         config = ConfigParser()
         config.read(filenames=str(self.config_file))
         for section in config.sections():
-            print(config.sections())
             # Validates if all information in config can be used, raise errors that can be handled in run
             
             gesture_name = config[section]["name"]

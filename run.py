@@ -115,7 +115,6 @@ class Run:
                 cv2.waitKey(1)
                
             lmList = detector.fdPositions(frame)
-            print(lmList)
             if self.gesture_detector.start_detection(lmList) == False:
                 print("Gesture Detection not starting")
 
