@@ -7,11 +7,9 @@ lmList = []
 processes = []
 
 import sys, os
-print(sys.path)
 currpath = os.getcwd()
 sys.path.append(currpath+"/modules")
 sys.path.append(currpath+"/modules/GestureLibs")
-print(sys.path)
 import argparse
 import cv2
 import time
