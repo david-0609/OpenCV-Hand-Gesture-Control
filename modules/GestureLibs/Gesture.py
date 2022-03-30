@@ -35,36 +35,42 @@ KEYPRESSLIST = ['\t', '\n', '\r', ' ', '!', '"', '#', '$', '%', '&', "'", '(',
 class Gesture():
 
     
-    def __init__(self, name: str, action: list, fingers_up: int, direction: str) -> None:
+    def __init__(self, name: str, action: list, action_type: str, fingers_up: int, direction: str) -> None:
         self.name = name
         self.action = action
+        self.action_type = action_type
         self.fingers_up = fingers_up
         self.direction = direction
     
     def exec_action(self):
 
-        for keypress in self.action:
-            if keypress not in KEYPRESSLIST:
-                raise ConfigError
+        if self.action_type == "keyboard":
 
-        global error_log
-        try:
-            if len(self.action) < 2:
-                for key in self.action:                
-                    press(key)
-            elif len(self.action) > 2:
-                for key in self.action:
-                    keyDown(key)
-                for key in self.action:
-                    keyUp(key)
+            for keypress in self.action:
+                if keypress not in KEYPRESSLIST:
+                    raise ConfigError
 
-        except BaseException as e:
-            print("Error: ", e)
-            error_log.append(e)
-    
-            if e == None:
-                return True
-            else:
-                return error_log
-            
+            global error_log
+            try:
+                if len(self.action) < 2:
+                    for key in self.action:                
+                        press(key)
+                elif len(self.action) > 2:
+                    for key in self.action:
+                        keyDown(key)
+                    for key in self.action:
+                        keyUp(key)
+
+            except BaseException as e:
+                print("Error: ", e)
+                error_log.append(e)
+        
+                if e == None:
+                    return True
+                else:
+                    return error_log
+
+        elif self.action_type == "command":
+            for action in self.action:
+                os.system(action)
 
