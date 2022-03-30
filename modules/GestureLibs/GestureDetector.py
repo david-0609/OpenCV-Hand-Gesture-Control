@@ -101,7 +101,10 @@ class GestureDetector:
                 for i in up_list:
                     if not i:
                         up_list.remove(i)
-                self.number_up.append(len(up_list)) 
+                try:
+                    self.number_up.append(len(up_list)) 
+                except BaseException as e:
+                    print(e)
             elif now >= self.end_time:
                 self.in_cooldown = True
                 self.cooldown_end = now+5
@@ -118,9 +121,12 @@ class GestureDetector:
             tip.x_coord = []
             tip.y_coord = []
             for coord in self.detection_frames:
-                if coord[0] == tip.id:
-                    tip.x_coord.append(coord[1])
-                    tip.y_coord.append(coord[2])
+                try:
+                    if coord[0] == tip.id:
+                        tip.x_coord.append(coord[1])
+                        tip.y_coord.append(coord[2])
+                except BaseException as e:
+                    print(e)
         print("fingertipsdata: ", self.FingerTipsData) 
         self.detection_frames = []  # Clears list after finish using it 
         self.identify_dir()
