@@ -1,0 +1,29 @@
+[GESTURE1]
+name = 2-Finger-Up-Swipe
+fingers_up = 2
+direction = u
+action = pageup
+
+[GESTURE2]
+name = three_finger_left
+fingers_up = 3
+direction = l
+action = f12 # Toggle dropdown terminal 
+
+[GESTURE3]
+name = three_finger_right
+fingers_up = 3
+direction = r
+action = ctrl,alt,t # Opens up terminal
+
+[GESTURE4]
+name = one_finger_right
+fingers_up = 1
+direction = r
+action = ctrl,shift,right # Move to desktop on right
+
+[GESTURE5]
+name = one_finger_left
+fingers_up = 1
+direction = l
+acion = ctrl,shift,left # Moves to desktop on left
