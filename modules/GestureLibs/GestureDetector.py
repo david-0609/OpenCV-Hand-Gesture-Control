@@ -208,7 +208,7 @@ class GestureDetector:
                     print("Gesture Detected")
 
             elif GestureDirection == "u" or GestureDirection == "d":
-                if self.number_up == gesture.fingers_up:
+                if self.number_up == gesture.fingers_up and GestureDirection == gesture.direction:
                     pyautogui.alert('A gesture is detected, Gesture name: '+gesture.name, title="Success")
                     gesture.exec_action()
 
