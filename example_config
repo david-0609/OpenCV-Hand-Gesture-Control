@@ -3,12 +3,14 @@ name = 2-Finger-Up-Swipe
 fingers_up = 2
 direction = u
 action = pageup
+action_type = keyboard
 
 [GESTURE2]
 name = three_finger_left
 fingers_up = 3
 direction = l
 action = f12 
+action_type = keyboard
 # Toggle dropdown terminal  
 
 [GESTURE3]
@@ -16,20 +18,22 @@ name = three_finger_right
 fingers_up = 3
 direction = r
 action = ctrl,alt,t 
+action_type = keyboard
 # Opens terminal window
 
 [GESTURE4]
-name = one_finger_right
-fingers_up = 1
+name = five_finger_right
+fingers_up = 5
 direction = r
-action = ctrl,shift,right 
-# Goes to desktop on right
+action = firefox 
+action_type = command 
+# Opens firefox 
 
 [GESTURE5]
-name = one_finger_left
-fingers_up = 1
+name = five_finger_left
+fingers_up = 5
 direction = l
-action = ctrl,shift,left 
-# Goes to desktop on left
-
+action = ctrl,shift,home
+action_type = keyboard
+# Return to desktop
 
