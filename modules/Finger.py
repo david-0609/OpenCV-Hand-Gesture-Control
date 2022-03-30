@@ -25,7 +25,6 @@ class Finger():
             for pt in cleaned_list:
                 ylist.append(pt[2])
                     
-            print(ylist)
             ylist_copy = ylist.copy()
             ylist.sort(reverse=True)
             if ylist == ylist_copy:

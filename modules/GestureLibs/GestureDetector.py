@@ -57,7 +57,7 @@ class GestureDetector:
         Determines if the start condition is met (all 5 fingers up) and records raw data within the detection window
         """
         if self.in_cooldown and self.cooldown_end != None: 
-            print(f"In cooldown, cooldown ends in {0}",int(self.cooldown_end-time.time()))
+            print(f"In cooldown, cooldown ends in {int(self.cooldown_end-time.time())}")
             if int(time.time()) > self.cooldown_end:
                 self.in_cooldown = False
 
@@ -146,6 +146,7 @@ class GestureDetector:
             diff_y = abs(final_y-first_y)
             print(diff_x, diff_y)
             if diff_x > diff_y:
+                print("Left or right")
                 # goes left/right
                 if first_x < final_x:
                     print("right")
@@ -155,13 +156,17 @@ class GestureDetector:
                     fingertip.direction = "l" # L for left
                 
             elif diff_y > diff_x:
+                print("Up or down")
+                print(first_y, final_y)
                 #goes up/down      
-                if first_y < final_y:
+                if first_y > final_y:
                     print("up")
                     fingertip.direction = "u"
                 elif first_y < final_y:
                     print("Down")
                     fingertip.direction = "d"
+            else:
+                print("Direction cannot be determined")
 
         print("Gesture Direction Done")
         self.match_gesture()
@@ -173,14 +178,22 @@ class GestureDetector:
 
         for fingertip in self.FingerTipsData:
             DirectionsList.append(fingertip.direction)
-
+        print("Directions", DirectionsList)
 
         # To find the majority of the directions of fingers, the fingers direction have to be mapped to an integer value 
         DirectionsList = convert_dir_id(DirectionsList)
         GestureDirection = findMajority(DirectionsList) # Finds most common value
         self.number_up = findMajority(self.number_up)
+        print("Num of fingers up:", self.number_up)
         GestureDirection = convert_dir_id(GestureDirection) 
         # Allows the number of fingers detected to be one more or one less to compensate for error
+        print("GestureDirection", GestureDirection)
+
+        if GestureDirection == "u" or GestureDirection == "d":
+            print("Adjusting")
+            if self.number_up >= 3:
+                self.number_up = self.number_up - 2 # Adjust for error from observation
+
         try:
             dev_1plus = self.number_up + 1
             dev_1minus = self.number_up - 1
@@ -188,11 +201,16 @@ class GestureDetector:
             print("Error in Gesture Detection")
         for gesture in self.GestureList:
             # Now matches gesture with the GestureList that was imported from main
-            if GestureDirection == gesture.direction:
+            if GestureDirection == gesture.direction and GestureDirection != "u" and GestureDirection != "d":
                 if self.number_up == gesture.fingers_up or dev_1minus == gesture.fingers_up or dev_1plus == gesture.fingers_up:
                     pyautogui.alert('A gesture is detected, Gesture name: '+gesture.name, title="Success")
                     gesture.exec_action()
                     print("Gesture Detected")
+
+            elif GestureDirection == "u" or GestureDirection == "d":
+                if self.number_up == gesture.fingers_up:
+                    pyautogui.alert('A gesture is detected, Gesture name: '+gesture.name, title="Success")
+                    gesture.exec_action()
 
             else:
                 print("No Gesture Detected") 
