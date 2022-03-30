@@ -29,5 +29,5 @@ The design pattern used for this project is Facade. I used this to abstract the 
 
 The tool for reading the config file is configparser, a python library. The syntax of configs can be seen in the example file.
 Syntax of config is very straightforwards and easy to use. 
-Note that for every gesture, a new section name (name in `[]`) should be created. All options are required to be filled out or an error would be thrown when executing the gesture. 
+Note that for every gesture, a new section name (name in `[]`) should be created. All options are required to be filled out or an error would be thrown when executing the gesture. Comments must be placed after a line, in line comments will also be read into the config 
 For more information refer to [configparser's documentation page](https://docs.python.org/3/library/configparser.html)

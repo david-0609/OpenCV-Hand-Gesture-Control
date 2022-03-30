@@ -18,9 +18,11 @@ class GestureGenerator:
                 gesture_action = config[section]["action"]
                 gesture_fingers_up = config[section]["fingers_up"]
                 gesture_direction = config[section]["direction"]
+                print(gesture_action.split(","))
                 GestureList.append(Gesture.Gesture(str(gesture_name), gesture_action.split(","), 
                                                    int(gesture_fingers_up), str(gesture_direction)))
             except KeyError:
                 print("Check your config for errors!")
+
         return GestureList
 

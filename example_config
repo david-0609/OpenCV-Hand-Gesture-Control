@@ -8,22 +8,28 @@ action = pageup
 name = three_finger_left
 fingers_up = 3
 direction = l
-action = f12 # Toggle dropdown terminal 
+action = f12 
+# Toggle dropdown terminal  
 
 [GESTURE3]
 name = three_finger_right
 fingers_up = 3
 direction = r
-action = ctrl,alt,t # Opens up terminal
+action = ctrl,alt,t 
+# Opens terminal window
 
 [GESTURE4]
 name = one_finger_right
 fingers_up = 1
 direction = r
-action = ctrl,shift,right # Move to desktop on right
+action = ctrl,shift,right 
+# Goes to desktop on right
 
 [GESTURE5]
 name = one_finger_left
 fingers_up = 1
 direction = l
-action = ctrl,shift,left # Moves to desktop on left
+action = ctrl,shift,left 
+# Goes to desktop on left
+
+
