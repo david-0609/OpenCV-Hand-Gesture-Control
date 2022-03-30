@@ -26,4 +26,4 @@ action = ctrl,shift,right # Move to desktop on right
 name = one_finger_left
 fingers_up = 1
 direction = l
-acion = ctrl,shift,left # Moves to desktop on left
+action = ctrl,shift,left # Moves to desktop on left

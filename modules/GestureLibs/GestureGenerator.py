@@ -12,12 +12,15 @@ class GestureGenerator:
         config.read(filenames=str(self.config_file))
         for section in config.sections():
             # Validates if all information in config can be used, raise errors that can be handled in run
-            
-            gesture_name = config[section]["name"]
-            gesture_action = config[section]["action"]
-            gesture_fingers_up = config[section]["fingers_up"]
-            gesture_direction = config[section]["direction"]
-            GestureList.append(Gesture.Gesture(str(gesture_name), gesture_action.split(","), 
-                                               int(gesture_fingers_up), str(gesture_direction)))
+            try:
+
+                gesture_name = config[section]["name"]
+                gesture_action = config[section]["action"]
+                gesture_fingers_up = config[section]["fingers_up"]
+                gesture_direction = config[section]["direction"]
+                GestureList.append(Gesture.Gesture(str(gesture_name), gesture_action.split(","), 
+                                                   int(gesture_fingers_up), str(gesture_direction)))
+            except KeyError:
+                print("Check your config for errors!")
         return GestureList
 
