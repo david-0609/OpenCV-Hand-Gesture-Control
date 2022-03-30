@@ -42,7 +42,8 @@ OOP will be used for extendiblity in the future and ease of access with a front 
 
 A detection window will be started as soon as all 5 fingers are found on screen, the default value is 3 seconds. Frames in the future 3 seconds will be monitored and after the finger is out of the camera or the window is over, an action will be performed through keyboard shortcut based on the results of monitoring. The x and y coordinates will be monitored and determined similiarly to the finger_up function.
 
-## Screenshots
+## Demo Video
+See Repo
 
 ## Usage Example
 
