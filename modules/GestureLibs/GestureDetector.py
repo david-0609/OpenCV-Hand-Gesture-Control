@@ -173,12 +173,12 @@ class GestureDetector:
         
     def match_gesture(self):
         # Match previous information to a gesture
-        DirectionsList = []
+        DirectionsList = [fingertip.direction for fingertip in self.FingerTipsData]
         GestureDirection = ""
 
-        for fingertip in self.FingerTipsData:
-            DirectionsList.append(fingertip.direction)
-        print("Directions", DirectionsList)
+#        for fingertip in self.FingerTipsData:
+#            DirectionsList.append(fingertip.direction)
+#        print("Directions", DirectionsList)
 
         # To find the majority of the directions of fingers, the fingers direction have to be mapped to an integer value 
         DirectionsList = convert_dir_id(DirectionsList)
